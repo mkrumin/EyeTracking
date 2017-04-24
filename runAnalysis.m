@@ -14,6 +14,23 @@ if hObject.Value
         xSpan = h.roi(1):sum(h.roi([1, 3]))-1;
         ySpan = h.roi(2):sum(h.roi([2, 4]))-1;
         res = analyzeSingleFrame(frame(ySpan, xSpan), params);
+        h.results.x(iFrame) = res.x0;
+        h.results.y(iFrame) = res.y0;
+        h.results.area(iFrame) = res.area;
+        h.results.aAxis(iFrame) = res.a;
+        h.results.bAxis(iFrame) = res.b;
+        h.results.theta(iFrame) = res.theta;
+        h.results.goodFit(iFrame) = res.isEllipse;
+%         h.results.blink = false;
+        h.results.gaussStd(iFrame) = params.gaussStd;
+        h.results.threshold(iFrame) = params.thresh;
+        h.results.roi(iFrame, :) = h.roi;
+        h.results.equation{iFrame} = res.eq;
+        h.results.xxContour{iFrame} = res.xxEdge;
+        h.results.yyContour{iFrame} = res.yyEdge;
+        h.results.xxEllipse{iFrame} = res.xxEllipse;
+        h.results.yyEllipse{iFrame} = res.yyEllipse;
+        h.analyzedFrames(iFrame) = true;
         if ~mod(i,100)
             tNow = toc(tStart);
             fps = i/tNow;

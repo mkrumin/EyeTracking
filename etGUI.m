@@ -22,7 +22,7 @@ function varargout = etGUI(varargin)
 
 % Edit the above text to modify the response to help etGUI
 
-% Last Modified by GUIDE v2.5 21-Apr-2017 18:10:13
+% Last Modified by GUIDE v2.5 24-Apr-2017 15:36:02
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -52,19 +52,23 @@ function etGUI_OpeningFcn(hObject, eventdata, handles, varargin)
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to etGUI (see VARARGIN)
 
+% lets' turn off these useless and annoying warnings off
+warning('off', 'MATLAB:nargchk:deprecated')
+
 handles.Axes.Visible = 'off';
 handles.OriginalRadio.Value = 1;
 handles.FilterSizeEdit.Value = 2; 
 handles.FilterSizeEdit.String = '2'; 
 handles.ViewPush.Enable = 'off';
+handles.AutoPush.Enable = 'off';
 handles.CenterCheck.Value = false;
 handles.EdgeCheck.Value = false;
 handles.EllipseCheck.Value = true;
 handles.ROICheck.Value = false;
 handles.CropCheck.Value = false;
 
-handles.CurrentFolder = 'C:\DATA\';
-% handles.CurrentFolder = '\\zserver.cortexlab.net\Data\EyeCamera';
+% handles.CurrentFolder = 'C:\DATA\';
+handles.CurrentFolder = '\\zserver.cortexlab.net\Data\EyeCamera';
 
 % Choose default command line output for etGUI
 handles.output = hObject;
@@ -254,24 +258,30 @@ function RunPush_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% h = handles;
-% while (hObject.Value) && h.iFrame<h.vr.NumberOfFrames
-%     h.iFrame = h.iFrame + 1;
-%     h.CurrentFrame = read(h.vr, [h.iFrame, h.iFrame]);
-%     h.FrameText.String = ...
-%         sprintf('Frame %1.0f/%1.0f', h.iFrame, h.vr.NumberOfFrames);
-%     h.FrameSlider.Value = h.iFrame;
-%     h.FineFrameSlider.Value = h.iFrame;
-%     params.gaussStd = h.FilterSizeEdit.Value;
-%     params.thresh = h.ThresholdSlider.Value;
-%     xSpan = h.roi(1):sum(h.roi([1, 3]));
-%     ySpan = h.roi(2):sum(h.roi([2, 4]));
-%     res = analyzeSingleFrame(h.CurrentFrame(ySpan, xSpan), params);
-% %     plotResults(res, h);
-%     drawnow;
-% end
-% hObject.Value = 0;
-% guidata(hObject, h);
+h = handles;
+hObject.BackgroundColor = 'red';
+drawnow;
+tStart = tic;
+for i = 1:length(h.framesToAnalyze)
+    iFrame = h.framesToAnalyze(i);
+    frame = read(h.vr, [iFrame iFrame]);
+    params.gaussStd = h.FilterSizeEdit.Value;
+    params.thresh = h.ThresholdSlider.Value;
+    xSpan = h.roi(1):sum(h.roi([1, 3]))-1;
+    ySpan = h.roi(2):sum(h.roi([2, 4]))-1;
+    res = analyzeSingleFrame(frame(ySpan, xSpan), params);
+    if ~mod(i,100)
+        tNow = toc(tStart);
+        fps = i/tNow;
+        tLeft = (length(h.framesToAnalyze)-i)/fps;
+        h.AnalysisStatusText.String = ...
+            sprintf('%d/%d\t %3.0f fps \t%s  left', ...
+            i, length(h.framesToAnalyze), fps, ...
+            duration(seconds(tLeft), 'Format', 'hh:mm:ss'));
+        drawnow;
+    end
+end
+hObject.BackgroundColor = [0.94 0.94 0.94];
 
 
 function FilterSizeEdit_Callback(hObject, eventdata, handles)
@@ -497,3 +507,67 @@ function BWRadio_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of BWRadio
 
 updateFigure(hObject, eventdata, handles);
+
+function RangeEdit_Callback(hObject, eventdata, handles)
+% hObject    handle to RangeEdit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of RangeEdit as text
+%        str2double(get(hObject,'String')) returns contents of RangeEdit as a double
+
+% h.RangeEdit.String = '1:end';
+global frameRange
+h = handles;
+tmp = 1:h.vr.NumberOfFrames;
+try
+    h.RangeEdit.Value = eval(sprintf('tmp(%s)', h.RangeEdit.String));
+    h.AnalysisStatusText.String = sprintf('1/%d\t xxx fps \thh:mm:ss  left', length(h.RangeEdit.Value));
+    h.RangeEdit.BackgroundColor = 'green';
+    pause(0.2);
+    h.RangeEdit.BackgroundColor = 'white';
+catch
+    h.RangeEdit.BackgroundColor = 'red';
+end
+
+if h.OverwriteCheck.Value
+    h.framesToAnalyze = h.RangeEdit.Value;
+else
+    h.framesToAnalyze = setdiff(h.RangeEdit.Value, find(h.analyzedFrames));
+end
+
+h.AnalysisStatusText.String = sprintf('1/%d\t xxx fps \thh:mm:ss  left', length(h.framesToAnalyze));
+
+guidata(hObject, h);
+
+% --- Executes during object creation, after setting all properties.
+function RangeEdit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to RangeEdit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in OverwriteCheck.
+function OverwriteCheck_Callback(hObject, eventdata, handles)
+% hObject    handle to OverwriteCheck (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of OverwriteCheck
+
+h = handles;
+if hObject.Value
+    h.framesToAnalyze = h.RangeEdit.Value;
+else
+    h.framesToAnalyze = setdiff(h.RangeEdit.Value, find(h.analyzedFrames));
+end
+
+h.AnalysisStatusText.String = sprintf('1/%d\t xxx fps \thh:mm:ss  left', length(h.framesToAnalyze));
+
+guidata(hObject, h);

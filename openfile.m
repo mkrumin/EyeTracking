@@ -43,7 +43,19 @@ h.FineFrameSlider.Min = 1;
 h.FineFrameSlider.Max = h.vr.NumberOfFrames;
 h.FineFrameSlider.SliderStep = [1/h.vr.NumberOfFrames 0.01];
 
-
 h.FrameText.String = sprintf('Frame %1.0f/%1.0f', h.iFrame, h.vr.NumberOfFrames);
-updateFigure(hObject, eventdata, h);
 
+h.RangeEdit.String = '1:end';
+tmp = 1:h.vr.NumberOfFrames;
+h.RangeEdit.Value = eval(sprintf('tmp(%s)', h.RangeEdit.String));
+
+h.analyzedFrames = false(h.vr.NumberOfFrames, 1);
+if h.OverwriteCheck.Value
+    h.framesToAnalyze = h.RangeEdit.Value;
+else
+    h.framesToAnalyze = setdiff(h.RangeEdit.Value, find(h.analyzedFrames));
+end
+
+h.AnalysisStatusText.String = sprintf('1/%d\t xxx fps \thh:mm:ss  left', length(h.framesToAnalyze));
+
+updateFigure(hObject, eventdata, h);

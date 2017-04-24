@@ -22,7 +22,7 @@ function varargout = etGUI(varargin)
 
 % Edit the above text to modify the response to help etGUI
 
-% Last Modified by GUIDE v2.5 24-Apr-2017 15:36:02
+% Last Modified by GUIDE v2.5 24-Apr-2017 19:40:13
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -252,36 +252,14 @@ function CropCheck_Callback(hObject, eventdata, handles)
 updateFigure(hObject, eventdata, handles);
 
 
-% --- Executes on button press in RunPush.
-function RunPush_Callback(hObject, eventdata, handles)
-% hObject    handle to RunPush (see GCBO)
+% --- Executes on button press in RunToggle.
+function RunToggle_Callback(hObject, eventdata, handles)
+% hObject    handle to RunToggle (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-h = handles;
-hObject.BackgroundColor = 'red';
-drawnow;
-tStart = tic;
-for i = 1:length(h.framesToAnalyze)
-    iFrame = h.framesToAnalyze(i);
-    frame = read(h.vr, [iFrame iFrame]);
-    params.gaussStd = h.FilterSizeEdit.Value;
-    params.thresh = h.ThresholdSlider.Value;
-    xSpan = h.roi(1):sum(h.roi([1, 3]))-1;
-    ySpan = h.roi(2):sum(h.roi([2, 4]))-1;
-    res = analyzeSingleFrame(frame(ySpan, xSpan), params);
-    if ~mod(i,100)
-        tNow = toc(tStart);
-        fps = i/tNow;
-        tLeft = (length(h.framesToAnalyze)-i)/fps;
-        h.AnalysisStatusText.String = ...
-            sprintf('%d/%d\t %3.0f fps \t%s  left', ...
-            i, length(h.framesToAnalyze), fps, ...
-            duration(seconds(tLeft), 'Format', 'hh:mm:ss'));
-        drawnow;
-    end
-end
-hObject.BackgroundColor = [0.94 0.94 0.94];
+handles = runAnalysis(hObject, eventdata, handles);
+guidata(hObject, handles);
 
 
 function FilterSizeEdit_Callback(hObject, eventdata, handles)

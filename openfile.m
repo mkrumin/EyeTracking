@@ -8,6 +8,7 @@ h.CurrentFolder = PathName;
 h.FileName = FileName;
 
 h.vr = VideoReader(fullfile(PathName, FileName));
+h.FilenameText.String = FileName;
 frames = read(h.vr, [1 min(100, h.vr.NumberOfFrames)]);
 frames = squeeze(frames);
 cl = class(frames);
@@ -57,5 +58,24 @@ else
 end
 
 h.AnalysisStatusText.String = sprintf('1/%d\t xxx fps \thh:mm:ss  left', length(h.framesToAnalyze));
+
+nFrames = h.vr.NumberOfFrames;
+h.results = struct([]);
+h.results(1).x = NaN(nFrames, 1);
+h.results.y = NaN(nFrames, 1);
+h.results.area = NaN(nFrames, 1);
+h.results.aAxis = NaN(nFrames, 1);
+h.results.bAxis = NaN(nFrames, 1);
+h.results.theta = NaN(nFrames, 1);
+h.results.goodFit = false(nFrames, 1);
+h.results.blink = false(nFrames, 1);
+h.results.gaussStd = NaN(nFrames, 1);
+h.results.threshold = NaN(nFrames, 1);
+h.results.roi = NaN(nFrames, 4);
+h.results.equation = cell(nFrames, 1);
+h.results.xxContour = cell(nFrames, 1);
+h.results.yyContour = cell(nFrames, 1);
+h.results.xxEllipse = cell(nFrames, 1);
+h.results.yyEllipse = cell(nFrames, 1);
 
 updateFigure(hObject, eventdata, h);

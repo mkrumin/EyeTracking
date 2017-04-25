@@ -27,6 +27,7 @@ if hObject.Value
         h.results.gaussStd(iFrame) = params.gaussStd;
         h.results.threshold(iFrame) = params.thresh;
         h.results.roi(iFrame, :) = h.roi;
+        h.results.blinkRoi(iFrame, :) = h.blinkRoi;
         h.results.equation{iFrame} = res.eq;
         h.results.xxContour{iFrame} = res.xxEdge;
         h.results.yyContour{iFrame} = res.yyEdge;

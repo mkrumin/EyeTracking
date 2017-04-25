@@ -67,6 +67,8 @@ handles.EllipseCheck.Value = true;
 handles.BlinkCheck.Value = true;
 handles.ROICheck.Value = false;
 handles.CropCheck.Value = false;
+handles.fileSave.Enable = 'off';
+handles.editPreferences.Enable = 'off';
 
 % handles.CurrentFolder = 'C:\DATA\';
 handles.CurrentFolder = '\\zserver.cortexlab.net\Data\EyeCamera';
@@ -399,13 +401,14 @@ function fileSave_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-
 % --------------------------------------------------------------------
 function fileSaveAs_Callback(hObject, eventdata, handles)
 % hObject    handle to fileSaveAs (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+handles = fileSaveAs(hObject, eventdata, handles);
+guidata(hObject, handles);
 
 % --------------------------------------------------------------------
 function fileLoad_Callback(hObject, eventdata, handles)

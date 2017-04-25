@@ -3,6 +3,10 @@ function h = openfile(hObject, eventdata, h)
 [FileName, PathName, ~] = ...
     uigetfile('*.mj2', 'Open Video File...', h.CurrentFolder);
 
+if FileName==0
+    warning('No file was selected');
+    return;
+end
 h.CurrentFolder = PathName;
 h.FileName = FileName;
 
@@ -94,6 +98,7 @@ h.results.blinkRho = NaN(nFrames, 1);
 h.results.gaussStd = NaN(nFrames, 1);
 h.results.threshold = NaN(nFrames, 1);
 h.results.roi = NaN(nFrames, 4);
+h.results.blinkRoi = NaN(nFrames, 4);
 h.results.equation = cell(nFrames, 1);
 h.results.xxContour = cell(nFrames, 1);
 h.results.yyContour = cell(nFrames, 1);

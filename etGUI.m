@@ -22,7 +22,7 @@ function varargout = etGUI(varargin)
 
 % Edit the above text to modify the response to help etGUI
 
-% Last Modified by GUIDE v2.5 25-Apr-2017 14:57:24
+% Last Modified by GUIDE v2.5 25-Apr-2017 15:58:11
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -560,6 +560,28 @@ function ReplayToggle_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of ReplayToggle
 
+h = handles;
+if hObject.Value
+    hObject.BackgroundColor = 'green';
+    hObject.String = 'Stop';
+    drawnow;
+end
+framesToReplay = find(h.analyzedFrames);
+% find a frame closest to the current one, which is analyzed
+[~, iF] = min(abs(framesToReplay-h.iFrame));
+while (hObject.Value) && ~isempty(iF) && iF<length(framesToReplay)
+    iF = iF + 1;
+    h.iFrame = framesToReplay(iF);
+    h.CurrentFrame = read(h.vr, h.iFrame);
+    updateFigure(hObject, eventdata, h);
+    h.ReplaySlider.Value = iF;
+    guidata(hObject, h);
+end
+hObject.Value = 0;
+hObject.String = 'Replay';
+hObject.BackgroundColor = [1 1 1]*0.94;
+guidata(hObject, h);
+
 
 % --- Executes on button press in BlinkROIPush.
 function BlinkROIPush_Callback(hObject, eventdata, handles)
@@ -620,3 +642,32 @@ function BlinkCheck_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of BlinkCheck
 
 updateFigure(hObject, eventdata, handles);
+
+
+% --- Executes on slider movement.
+function ReplaySlider_Callback(hObject, eventdata, handles)
+% hObject    handle to ReplaySlider (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'Value') returns position of slider
+%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+
+hObject.Value = round(hObject.Value);
+idx = find(handles.analyzedFrames);
+handles.iFrame = idx(hObject.Value);
+handles.CurrentFrame = read(handles.vr, handles.iFrame);
+% call udateFigure() as if from the ReplayToggle Callback
+updateFigure(handles.ReplayToggle, eventdata, handles);
+guidata(hObject, handles);
+
+% --- Executes during object creation, after setting all properties.
+function ReplaySlider_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to ReplaySlider (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: slider controls usually have a light gray background.
+if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor',[.9 .9 .9]);
+end

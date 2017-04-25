@@ -63,3 +63,8 @@ else
     drawnow;
 end
 
+len = sum(h.analyzedFrames);
+h.ReplaySlider.Max = len;
+h.ReplaySlider.Min = min(1, len);
+[~, h.ReplaySlider.Value] = min(abs(find(h.analyzedFrames)-h.iFrame));
+h.ReplaySlider.SliderStep = [min(1, 1/len), min(1, 10/len)];

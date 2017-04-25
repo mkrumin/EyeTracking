@@ -59,6 +59,11 @@ h.FineFrameSlider.Value = h.iFrame;
 h.FineFrameSlider.Min = 1;
 h.FineFrameSlider.Max = h.vr.NumberOfFrames;
 h.FineFrameSlider.SliderStep = [1/h.vr.NumberOfFrames 0.01];
+h.ReplaySlider.Max = 1;
+h.ReplaySlider.Min = 0;
+h.ReplaySlider.Value = 0;
+h.ReplaySlider.SliderStep = [1, 1];
+
 
 h.FrameText.String = sprintf('Frame %1.0f/%1.0f', h.iFrame, h.vr.NumberOfFrames);
 

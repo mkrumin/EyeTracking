@@ -3,6 +3,10 @@ function plotResults(res, h)
 hold on;
 xShift = h.roi(1)-1;
 yShift = h.roi(2)-1;
+% make sure the xlim, ylim do not change
+xlim(h.Axes, xlim(h.Axes));
+ylim(h.Axes, ylim(h.Axes));
+
 if h.CenterCheck.Value
     plot(h.Axes, res.x0+xShift, res.y0+yShift, 'ro');
 end

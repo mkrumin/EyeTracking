@@ -15,14 +15,14 @@ function varargout = etGUI(varargin)
 %      unrecognized property name or invalid value makes property application
 %      stop.  All inputs are passed to etGUI_OpeningFcn via varargin.
 %
-%      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
+%      *See GUI editPreferences on GUIDE's Tools menu.  Choose "GUI allows only one
 %      instance to run (singleton)".
 %
 % See also: GUIDE, GUIDATA, GUIHANDLES
 
 % Edit the above text to modify the response to help etGUI
 
-% Last Modified by GUIDE v2.5 24-Apr-2017 19:40:13
+% Last Modified by GUIDE v2.5 25-Apr-2017 14:57:24
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -59,11 +59,12 @@ handles.Axes.Visible = 'off';
 handles.OriginalRadio.Value = 1;
 handles.FilterSizeEdit.Value = 2; 
 handles.FilterSizeEdit.String = '2'; 
-handles.ViewPush.Enable = 'off';
+handles.PlotPush.Enable = 'off';
 handles.AutoPush.Enable = 'off';
 handles.CenterCheck.Value = false;
 handles.EdgeCheck.Value = false;
 handles.EllipseCheck.Value = true;
+handles.BlinkCheck.Value = true;
 handles.ROICheck.Value = false;
 handles.CropCheck.Value = false;
 
@@ -315,9 +316,9 @@ hObject.Value = 0;
 hObject.String = 'Preview';
 guidata(hObject, h);
 
-% --- Executes on button press in ViewPush.
-function ViewPush_Callback(hObject, eventdata, handles)
-% hObject    handle to ViewPush (see GCBO)
+% --- Executes on button press in PlotPush.
+function PlotPush_Callback(hObject, eventdata, handles)
+% hObject    handle to PlotPush (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
@@ -421,8 +422,8 @@ function Edit_Callback(hObject, eventdata, handles)
 
 
 % --------------------------------------------------------------------
-function Options_Callback(hObject, eventdata, handles)
-% hObject    handle to Options (see GCBO)
+function editPreferences_Callback(hObject, eventdata, handles)
+% hObject    handle to editPreferences (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
@@ -549,3 +550,73 @@ end
 h.AnalysisStatusText.String = sprintf('1/%d\t xxx fps \thh:mm:ss  left', length(h.framesToAnalyze));
 
 guidata(hObject, h);
+
+
+% --- Executes on button press in ReplayToggle.
+function ReplayToggle_Callback(hObject, eventdata, handles)
+% hObject    handle to ReplayToggle (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of ReplayToggle
+
+
+% --- Executes on button press in BlinkROIPush.
+function BlinkROIPush_Callback(hObject, eventdata, handles)
+% hObject    handle to BlinkROIPush (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+hRect = imrect(handles.Axes, handles.blinkRoi);
+fcn = makeConstrainToRectFcn('imrect', [1 handles.vr.Width], [1 handles.vr.Height]);
+setPositionConstraintFcn(hRect,fcn);
+handles.blinkRoi = wait(hRect);
+handles.blinkRoi = [ceil(handles.blinkRoi(1:2)), floor(handles.blinkRoi(3:4))];
+handles.BlinkCheck.Value = 1;
+
+updateFigure(hObject, eventdata, handles);
+guidata(hObject, handles);
+
+
+function BlinkRhoEdit_Callback(hObject, eventdata, handles)
+% hObject    handle to BlinkRhoEdit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of BlinkRhoEdit as text
+%        str2double(get(hObject,'String')) returns contents of BlinkRhoEdit as a double
+
+num = str2double(hObject.String);
+if ~isnan(num)
+    num = min(num, 1);
+    hObject.Value = num;
+    hObject.String = sprintf('%5.3f', hObject.Value);
+else
+    hObject.String = sprintf('%5.3f', hObject.Value);
+end
+
+updateFigure(hObject, eventdata, handles);
+guidata(hObject, handles);
+
+% --- Executes during object creation, after setting all properties.
+function BlinkRhoEdit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to BlinkRhoEdit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in BlinkCheck.
+function BlinkCheck_Callback(hObject, eventdata, handles)
+% hObject    handle to BlinkCheck (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of BlinkCheck
+
+updateFigure(hObject, eventdata, handles);

@@ -14,6 +14,7 @@ if hObject.Value
         xSpan = h.roi(1):sum(h.roi([1, 3]))-1;
         ySpan = h.roi(2):sum(h.roi([2, 4]))-1;
         res = analyzeSingleFrame(frame(ySpan, xSpan), params);
+        [isBlink, blinkRho] = detectBlink(frame, h);
         h.results.x(iFrame) = res.x0;
         h.results.y(iFrame) = res.y0;
         h.results.area(iFrame) = res.area;
@@ -21,7 +22,8 @@ if hObject.Value
         h.results.bAxis(iFrame) = res.b;
         h.results.theta(iFrame) = res.theta;
         h.results.goodFit(iFrame) = res.isEllipse;
-%         h.results.blink = false;
+        h.results.blink(iFrame) = isBlink;
+        h.results.blinkRho(iFrame) = blinkRho;
         h.results.gaussStd(iFrame) = params.gaussStd;
         h.results.threshold(iFrame) = params.thresh;
         h.results.roi(iFrame, :) = h.roi;

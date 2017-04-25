@@ -1,7 +1,6 @@
 function h = openfile(hObject, eventdata, h)
 
-
-[FileName,PathName,FilterIndex] = ...
+[FileName, PathName, ~] = ...
     uigetfile('*.mj2', 'Open Video File...', h.CurrentFolder);
 
 h.CurrentFolder = PathName;
@@ -9,9 +8,16 @@ h.FileName = FileName;
 
 h.vr = VideoReader(fullfile(PathName, FileName));
 h.FilenameText.String = FileName;
-frames = read(h.vr, [1 min(100, h.vr.NumberOfFrames)]);
-frames = squeeze(frames);
-cl = class(frames);
+nFramesToRead = 500; % this is the maximum, given that the movie is long enough
+singleFrame = read(h.vr, 1);
+[nr, nc] = size(singleFrame);
+cl = class(singleFrame);
+framesToRead = unique(round(linspace(1, h.vr.NumberOfFrames, nFramesToRead)));
+frames = zeros(nr, nc, length(framesToRead), cl);
+for iFrame = 1:length(framesToRead)
+    frames(:,:,iFrame) = read(h.vr, framesToRead(iFrame));
+end
+
 h.MaxSlider.Max = intmax(cl);
 h.MaxSlider.Min = intmin(cl);
 h.MaxSlider.Value = max(frames(:));
@@ -31,7 +37,17 @@ thresh = binEdges(locs(1)+1);
 h.ThresholdSlider.Value = cast(thresh, cl);
 h.ThresholdText.String = sprintf('%3.1f', h.ThresholdSlider.Value);
 
+h.averageFrame = double(mean(frames, 3));
+af = h.averageFrame(:);
+af = af - mean(af);
+flatFrames = double(reshape(frames, [], size(frames, 3)));
+flatFrames = flatFrames - mean(flatFrames);
+blinkRho = (af'*flatFrames)/std(af)./std(flatFrames)/length(af);
+h.BlinkRhoEdit.Value = mean(blinkRho)-4*std(blinkRho);
+h.BlinkRhoEdit.String = sprintf('%5.3f', h.BlinkRhoEdit.Value);
+
 h.roi = [1 1 h.vr.Width h.vr.Height];
+h.blinkRoi = h.roi;
 
 h.iFrame = 1;
 h.CurrentFrame = frames(:,:,h.iFrame);
@@ -69,6 +85,7 @@ h.results.bAxis = NaN(nFrames, 1);
 h.results.theta = NaN(nFrames, 1);
 h.results.goodFit = false(nFrames, 1);
 h.results.blink = false(nFrames, 1);
+h.results.blinkRho = NaN(nFrames, 1);
 h.results.gaussStd = NaN(nFrames, 1);
 h.results.threshold = NaN(nFrames, 1);
 h.results.roi = NaN(nFrames, 4);

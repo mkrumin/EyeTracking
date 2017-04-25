@@ -15,14 +15,14 @@ else
 end
 
 axis equal tight off
-colormap gray
+colormap(h.Axes, 'gray');
 
 if h.ROICheck.Value
     hold on;
     rectangle('Position', h.roi, 'EdgeColor', 'r', 'LineStyle', '--')
+    rectangle('Position', h.blinkRoi, 'EdgeColor', 'y', 'LineStyle', '--')
     hold off;
 end
-
 
 if h.CropCheck.Value
     xlim([h.roi(1), h.roi(1)+h.roi(3)]);

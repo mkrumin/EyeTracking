@@ -14,5 +14,12 @@ if doAnalysis
     res = analyzeSingleFrame(h.CurrentFrame(ySpan, xSpan), params);
     plotResults(res, h);
 end
+if h.BlinkCheck.Value
+    isBlink = detectBlink(h.CurrentFrame, h);
+    if isBlink
+        colormap(h.Axes, [0:1/63:1; zeros(1, 64); zeros(1, 64)]');
+    end
+end
+
 drawnow limitrate;
 

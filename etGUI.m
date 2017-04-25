@@ -392,7 +392,7 @@ function fileOpen_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 handles = openfile(hObject, eventdata, handles);
-
+updateFigure(hObject, eventdata, handles);
 guidata(hObject, handles);
 
 % --------------------------------------------------------------------
@@ -416,13 +416,15 @@ function fileLoad_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+handles = fileLoad(hObject, eventdata, handles);
+guidata(hObject, handles);
+updateFigure(hObject, eventdata, handles);
 
 % --------------------------------------------------------------------
 function Edit_Callback(hObject, eventdata, handles)
 % hObject    handle to Edit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
 
 % --------------------------------------------------------------------
 function editPreferences_Callback(hObject, eventdata, handles)

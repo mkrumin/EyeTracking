@@ -16,6 +16,6 @@ if FileName == 0
     warning('File was not saved - provide a valid filename');
 else
     save(fullfile(PathName, FileName), 'results', 'state');
-    h.CurrentFolder = PathName;
+    h.CurrentResultsFolder = PathName;
     h.CurrentResultsFileName = FileName;
 end

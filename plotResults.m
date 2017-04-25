@@ -1,8 +1,8 @@
 function plotResults(res, h)
 
 hold on;
-xShift = h.roi(1)-1;
-yShift = h.roi(2)-1;
+xShift = res.roi(1)-1;
+yShift = res.roi(2)-1;
 % make sure the xlim, ylim do not change
 xlim(h.Axes, xlim(h.Axes));
 ylim(h.Axes, ylim(h.Axes));

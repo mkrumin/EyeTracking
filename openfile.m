@@ -1,12 +1,18 @@
-function h = openfile(hObject, eventdata, h)
+function h = openfile(hObject, eventdata, h, providedFileName)
 
-[FileName, PathName, ~] = ...
-    uigetfile('*.mj2', 'Open Video File...', h.CurrentFolder);
-
-if FileName==0
-    warning('No file was selected');
-    return;
+if nargin < 4
+    [FileName, PathName, ~] = ...
+        uigetfile('*.mj2', 'Open Video File...', h.CurrentFolder);
+    
+    if FileName==0
+        warning('No file was selected');
+        return;
+    end
+else
+    [PathName, fn, fe] = fileparts(providedFileName);
+    FileName = [fn, fe];
 end
+
 h.CurrentFolder = PathName;
 h.FileName = FileName;
 
@@ -105,4 +111,3 @@ h.results.yyContour = cell(nFrames, 1);
 h.results.xxEllipse = cell(nFrames, 1);
 h.results.yyEllipse = cell(nFrames, 1);
 
-updateFigure(hObject, eventdata, h);

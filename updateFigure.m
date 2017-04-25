@@ -8,6 +8,8 @@ h.FineFrameSlider.Value = h.iFrame;
 doAnalysis = h.CenterCheck.Value || h.EdgeCheck.Value || h.EllipseCheck.Value;
 if isequal(hObject.Tag, 'ReplayToggle')
     res = getSingleRes(h.results, h.iFrame);
+    % [x,y] in res are already roi-corrected, co for plotResults purposes:
+    res.roi = [1 1 h.vr.Width h.vr.Height];
     plotResults(res, h);
     if res.blink
         colormap(h.Axes, [0:1/63:1; zeros(1, 64); zeros(1, 64)]');
@@ -19,6 +21,7 @@ else
         xSpan = h.roi(1):sum(h.roi([1, 3]))-1;
         ySpan = h.roi(2):sum(h.roi([2, 4]))-1;
         res = analyzeSingleFrame(h.CurrentFrame(ySpan, xSpan), params);
+        res.roi = h.roi;
         plotResults(res, h);
     end
     if h.BlinkCheck.Value

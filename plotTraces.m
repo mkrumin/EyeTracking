@@ -7,6 +7,8 @@ if isfield(h, 'plotHandles')
     
     idx = find(h.analyzedFrames);
     blinkIdx = find(h.analyzedFrames & h.results.blink);
+    % analyzed, but not blink frames - used for ylim
+    nonBlinkIdx = find(h.analyzedFrames & ~h.results.blink);
     framesAxis = 1:h.vr.NumberOfFrames;
 
     h.plotHandles.xPlot.XData = framesAxis(idx);
@@ -21,39 +23,69 @@ if isfield(h, 'plotHandles')
     h.plotHandles.areaPlot.YData = h.results.area(idx);
     h.plotHandles.areaBlinks.XData = framesAxis(blinkIdx);
     h.plotHandles.areaBlinks.YData = h.results.area(blinkIdx);
+    h.plotHandles.rhoPlot.XData = framesAxis(idx);
+    h.plotHandles.rhoPlot.YData = h.results.blinkRho(idx);
+    h.plotHandles.rhoBlinks.XData = framesAxis(blinkIdx);
+    h.plotHandles.rhoBlinks.YData = h.results.blinkRho(blinkIdx);
+    
+    ylim(h.plotHandles.xAxes, [min(h.results.x(nonBlinkIdx)), max(h.results.x(nonBlinkIdx))]);
+    ylim(h.plotHandles.yAxes, [min(h.results.y(nonBlinkIdx)), max(h.results.y(nonBlinkIdx))]);
+    ylim(h.plotHandles.areaAxes, [min(h.results.area(nonBlinkIdx)), max(h.results.area(nonBlinkIdx))]);
+
 
 else
     h.plotHandles.figure = figure;
     try
-        set(h.plotHandles.figure, 'Name', sprintf('Result for %s', h.FileName)); 
+        set(h.plotHandles.figure, 'Name', sprintf('Results for %s', h.FileName)); 
     end
     % Do not delete the figure when close, just make it invisible
     set(h.plotHandles.figure, 'CloseRequestFcn', 'set(gcf, ''Visible'', ''off'');'); 
     
     idx = find(h.analyzedFrames);
     blinkIdx = find(h.analyzedFrames & h.results.blink);
+    % analyzed, but not blink frames - used for ylim
+    nonBlinkIdx = find(h.analyzedFrames & ~h.results.blink);
     framesAxis = 1:h.vr.NumberOfFrames;
     
-    h.plotHandles.xAxes = subplot(3, 1, 1);
+    h.plotHandles.xAxes = subplot(4, 1, 1);
     h.plotHandles.xPlot = plot(framesAxis(idx), h.results.x(idx));
     hold on;
     h.plotHandles.xBlinks = plot(framesAxis(blinkIdx), h.results.x(blinkIdx), 'r.');
     hold off;
     ylabel('X_{pos} [px]');
-    h.plotHandles.yAxes = subplot(3, 1, 2);
+    xlim([1, h.vr.NumberOfFrames]);
+    ylim([min(h.results.x(nonBlinkIdx)), max(h.results.x(nonBlinkIdx))]);
+
+    h.plotHandles.yAxes = subplot(4, 1, 2);
     h.plotHandles.yPlot = plot(framesAxis(idx), h.results.y(idx));
     hold on;
     h.plotHandles.yBlinks = plot(framesAxis(blinkIdx), h.results.y(blinkIdx), 'r.');
     hold off;
     ylabel('Y_{pos} [px]');
-    h.plotHandles.areaAxes = subplot(3, 1, 3);
+    xlim([1, h.vr.NumberOfFrames]);
+    ylim([min(h.results.y(nonBlinkIdx)), max(h.results.y(nonBlinkIdx))]);
+
+    h.plotHandles.areaAxes = subplot(4, 1, 3);
     h.plotHandles.areaPlot = plot(framesAxis(idx), h.results.area(idx));
     hold on;
     h.plotHandles.areaBlinks = plot(framesAxis(blinkIdx), h.results.area(blinkIdx), 'r.');
     hold off;
     xlabel('Frame #');
     ylabel('Area [px^2]');
-    
-    linkaxes([h.plotHandles.xAxes, h.plotHandles.yAxes, h.plotHandles.areaAxes], 'x');
+    xlim([1, h.vr.NumberOfFrames]);
+    ylim([min(h.results.area(nonBlinkIdx)), max(h.results.area(nonBlinkIdx))]);
+
+    h.plotHandles.rhoAxes = subplot(4, 1, 4);
+    h.plotHandles.rhoPlot = plot(framesAxis(idx), h.results.blinkRho(idx));
+    hold on;
+    h.plotHandles.rhoBlinks = plot(framesAxis(blinkIdx), h.results.blinkRho(blinkIdx), 'r.');
+    hold off;
+    xlabel('Frame #');
+    ylabel('blink \rho');
+    xlim([1, h.vr.NumberOfFrames]);
+    ylim([0 1]);
+
+    linkaxes([h.plotHandles.xAxes, h.plotHandles.yAxes,...
+        h.plotHandles.areaAxes, h.plotHandles.rhoAxes], 'x');
 end
 

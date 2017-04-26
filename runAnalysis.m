@@ -1,6 +1,9 @@
 function h = runAnalysis(hObject, eventdata, h)
 
 if hObject.Value
+    % set h.framesToAnalyze (might not be set correctly)
+    etGUI('OverwriteCheck_Callback',h.OverwriteCheck, eventdata, h);
+    h = guidata(h.OverwriteCheck);
     hObject.BackgroundColor = 'red';
     hObject.String= 'Stop';
     drawnow;

@@ -36,6 +36,7 @@ if isequal(state.FileName, h.FileName) && ...
     h.ReplaySlider.Max = len;
     h.ReplaySlider.Min = min(1, len);
     [~, h.ReplaySlider.Value] = min(abs(find(h.analyzedFrames)-h.iFrame));
+    h.ReplaySlider.SliderStep = [min(1, 1/len), min(1, 10/len)];
 else
     % if doesn't match ask what to do
     str = 'Results file does not match currenlty open video file. You can either "Load parameters only" (e.g. threshold value, ROIs, FilterSize), or "Cancel" and open the correct video file first.';

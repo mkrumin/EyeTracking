@@ -5,6 +5,8 @@ h.FrameText.String = ...
     sprintf('Frame %1.0f/%1.0f', h.iFrame, h.vr.NumberOfFrames);
 h.FrameSlider.Value = h.iFrame;
 h.FineFrameSlider.Value = h.iFrame;
+[~, h.ReplaySlider.Value] = min(abs(find(h.analyzedFrames)-h.iFrame));
+
 doAnalysis = h.CenterCheck.Value || h.EdgeCheck.Value || h.EllipseCheck.Value;
 if isequal(hObject.Tag, 'ReplayToggle')
     res = getSingleRes(h.results, h.iFrame);

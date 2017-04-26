@@ -54,6 +54,7 @@ function etGUI_OpeningFcn(hObject, eventdata, handles, varargin)
 
 % let's turn off these useless and annoying warnings off
 warning('off', 'MATLAB:nargchk:deprecated')
+set(hObject, 'CloseRequestFcn', @close_etGUI);
 
 handles.Axes.Visible = 'off';
 handles.OriginalRadio.Value = 1;
@@ -92,6 +93,7 @@ function varargout = etGUI_OutputFcn(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Get default command line output from handles structure
+
 varargout{1} = handles.output;
 
 
@@ -619,6 +621,8 @@ if ~isnan(num)
     num = min(num, 1);
     hObject.Value = num;
     hObject.String = sprintf('%5.3f', hObject.Value);
+    handles.results.blink(handles.analyzedFrames) = ...
+        handles.results.blinkRho(handles.analyzedFrames)<num;
 else
     hObject.String = sprintf('%5.3f', hObject.Value);
 end

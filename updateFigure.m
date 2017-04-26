@@ -16,6 +16,9 @@ if isequal(hObject.Tag, 'ReplayToggle')
     if res.blink
         colormap(h.Axes, [0:1/63:1; zeros(1, 64); zeros(1, 64)]');
     end
+    text(max(xlim), max(ylim), 'Replay', ...
+        'HorizontalAlignment', 'Right', 'VerticalAlignment', 'Bottom',...
+        'FontSize', 20, 'Color', [0 1 1]);
 else
     if doAnalysis
         params.gaussStd = h.FilterSizeEdit.Value;
@@ -32,6 +35,9 @@ else
             colormap(h.Axes, [0:1/63:1; zeros(1, 64); zeros(1, 64)]');
         end
     end
+    text(max(xlim), max(ylim), 'Preview', ...
+        'HorizontalAlignment', 'Right', 'VerticalAlignment', 'Bottom',...
+        'FontSize', 20, 'Color', [1 0.5 0]);
 end
 
 drawnow limitrate;

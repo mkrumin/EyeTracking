@@ -69,6 +69,7 @@ handles.ROICheck.Value = false;
 handles.CropCheck.Value = false;
 handles.fileSave.Enable = 'off';
 handles.editPreferences.Enable = 'off';
+handles = assignTooltips(handles);
 
 % handles.CurrentFolder = 'C:\DATA\';
 handles.CurrentFolder = '\\zserver.cortexlab.net\Data\EyeCamera';
@@ -470,7 +471,6 @@ function OriginalRadio_Callback(hObject, eventdata, handles)
 
 updateFigure(hObject, eventdata, handles);
 
-
 % --- Executes on button press in FilteredRadio.
 function FilteredRadio_Callback(hObject, eventdata, handles)
 % hObject    handle to FilteredRadio (see GCBO)
@@ -500,7 +500,6 @@ function RangeEdit_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of RangeEdit as text
 %        str2double(get(hObject,'String')) returns contents of RangeEdit as a double
 
-% h.RangeEdit.String = '1:end';
 global frameRange
 h = handles;
 tmp = 1:h.vr.NumberOfFrames;

@@ -22,7 +22,7 @@ function varargout = etGUI(varargin)
 
 % Edit the above text to modify the response to help etGUI
 
-% Last Modified by GUIDE v2.5 25-Apr-2017 15:58:11
+% Last Modified by GUIDE v2.5 26-Apr-2017 19:25:58
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -406,6 +406,19 @@ function fileSave_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+h = handles;
+results = h.results;
+state = getCurrentState(h);
+[~, fn, ~] = fileparts(h.FileName);
+if isfield(h, 'CurrentResultsFolder')
+    filename = fullfile(h.CurrentResultsFolder, [fn, '_processed.mat']);
+else
+    filename = fullfile(h.CurrentFolder, [fn, '_processed.mat']);
+end
+save(filename, 'results', 'state');
+h.lastFileSaved = filename;
+guidata(hObject, h);
+
 % --------------------------------------------------------------------
 function fileSaveAs_Callback(hObject, eventdata, handles)
 % hObject    handle to fileSaveAs (see GCBO)
@@ -681,3 +694,12 @@ function ReplaySlider_CreateFcn(hObject, eventdata, handles)
 if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor',[.9 .9 .9]);
 end
+
+
+% --------------------------------------------------------------------
+function runBatch_Callback(hObject, eventdata, handles)
+% hObject    handle to runBatch (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+etBatch(handles.figure1);

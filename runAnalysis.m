@@ -15,8 +15,12 @@ if hObject.Value
         ySpan = h.roi(2):sum(h.roi([2, 4]))-1;
         res = analyzeSingleFrame(frame(ySpan, xSpan), params);
         [isBlink, blinkRho] = detectBlink(frame, h);
-        h.results.x(iFrame) = res.x0;
-        h.results.y(iFrame) = res.y0;
+        
+        xShift = h.roi(1)-1;
+        yShift = h.roi(2)-1;
+        
+        h.results.x(iFrame) = res.x0+xShift;
+        h.results.y(iFrame) = res.y0+yShift;
         h.results.area(iFrame) = res.area;
         h.results.aAxis(iFrame) = res.a;
         h.results.bAxis(iFrame) = res.b;
@@ -29,10 +33,10 @@ if hObject.Value
         h.results.roi(iFrame, :) = h.roi;
         h.results.blinkRoi(iFrame, :) = h.blinkRoi;
         h.results.equation{iFrame} = res.eq;
-        h.results.xxContour{iFrame} = res.xxEdge;
-        h.results.yyContour{iFrame} = res.yyEdge;
-        h.results.xxEllipse{iFrame} = res.xxEllipse;
-        h.results.yyEllipse{iFrame} = res.yyEllipse;
+        h.results.xxContour{iFrame} = res.xxEdge+xShift;
+        h.results.yyContour{iFrame} = res.yyEdge+yShift;
+        h.results.xxEllipse{iFrame} = res.xxEllipse+xShift;
+        h.results.yyEllipse{iFrame} = res.yyEllipse+yShift;
         h.analyzedFrames(iFrame) = true;
         if ~mod(i,100)
             tNow = toc(tStart);
@@ -42,6 +46,7 @@ if hObject.Value
                 sprintf('%d/%d\t %3.0f fps \t%s  left', ...
                 i, length(h.framesToAnalyze), fps, ...
                 duration(seconds(tLeft), 'Format', 'hh:mm:ss'));
+            guidata(hObject, h);
             drawnow;
         end
         i = i + 1;

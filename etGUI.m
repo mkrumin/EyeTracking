@@ -52,14 +52,14 @@ function etGUI_OpeningFcn(hObject, eventdata, handles, varargin)
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to etGUI (see VARARGIN)
 
-% lets' turn off these useless and annoying warnings off
+% let's turn off these useless and annoying warnings off
 warning('off', 'MATLAB:nargchk:deprecated')
 
 handles.Axes.Visible = 'off';
 handles.OriginalRadio.Value = 1;
 handles.FilterSizeEdit.Value = 2; 
 handles.FilterSizeEdit.String = '2'; 
-handles.PlotPush.Enable = 'off';
+handles.PlotPush.Enable = 'on';
 handles.AutoPush.Enable = 'off';
 handles.CenterCheck.Value = false;
 handles.EdgeCheck.Value = false;
@@ -325,6 +325,8 @@ function PlotPush_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+handles = plotTraces(hObject, eventdata, handles);
+guidata(hObject, handles);
 
 
 function GotoEdit_Callback(hObject, eventdata, handles)

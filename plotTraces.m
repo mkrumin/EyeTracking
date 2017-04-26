@@ -35,6 +35,9 @@ if isfield(h, 'plotHandles')
 
 else
     h.plotHandles.figure = figure;
+    set(h.plotHandles.figure, 'UserData', h);
+    set(h.plotHandles.figure, 'WindowButtonDownFcn', @clickAction);
+    
     try
         set(h.plotHandles.figure, 'Name', sprintf('Results for %s', h.FileName)); 
     end
@@ -55,6 +58,7 @@ else
     ylabel('X_{pos} [px]');
     xlim([1, h.vr.NumberOfFrames]);
     ylim([min(h.results.x(nonBlinkIdx)), max(h.results.x(nonBlinkIdx))]);
+    title('Ctrl+Click to navigate to that frame in the GUI');
 
     h.plotHandles.yAxes = subplot(4, 1, 2);
     h.plotHandles.yPlot = plot(framesAxis(idx), h.results.y(idx));

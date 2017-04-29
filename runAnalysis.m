@@ -1,63 +1,70 @@
 function h = runAnalysis(hObject, eventdata, h)
 
+batchSize = 1000;
 if hObject.Value
     % set h.framesToAnalyze (might not be set correctly)
     etGUI('OverwriteCheck_Callback',h.OverwriteCheck, eventdata, h);
     h = guidata(h.OverwriteCheck);
+    nFramesToAnalyze = length(h.framesToAnalyze);
+    iStart = 1:batchSize:nFramesToAnalyze;
+    iEnd = min(iStart+batchSize-1, nFramesToAnalyze);
+    nBatches = length(iStart);
     hObject.BackgroundColor = 'red';
     hObject.String= 'Stop';
     drawnow;
     tStart = tic;
-    i = 1;
-    while hObject.Value && i<=length(h.framesToAnalyze)
-        iFrame = h.framesToAnalyze(i);
-        frame = read(h.vr, [iFrame iFrame]);
+    iBatch = 1;
+    while hObject.Value && iBatch<=nBatches
+        frameIdx = h.framesToAnalyze(iStart(iBatch):iEnd(iBatch));
+        frames = readBatch(h.vr, frameIdx);
         params.gaussStd = h.FilterSizeEdit.Value;
         params.thresh = h.ThresholdSlider.Value;
         xSpan = h.roi(1):sum(h.roi([1, 3]))-1;
         ySpan = h.roi(2):sum(h.roi([2, 4]))-1;
-        res = analyzeSingleFrame(frame(ySpan, xSpan), params);
-        [isBlink, blinkRho] = detectBlink(frame, h);
+        res = analyzeBatch(frames(ySpan, xSpan, :), params);
+        [isBlink, blinkRho] = detectBlinkBatch(frames, h);
         
         xShift = h.roi(1)-1;
         yShift = h.roi(2)-1;
+        xShiftCell = repmat({xShift}, length(frameIdx), 1); 
+        yShiftCell = repmat({yShift}, length(frameIdx), 1); 
         
-        h.results.x(iFrame) = res.x0+xShift;
-        h.results.y(iFrame) = res.y0+yShift;
-        h.results.area(iFrame) = res.area;
-        h.results.aAxis(iFrame) = res.a;
-        h.results.bAxis(iFrame) = res.b;
-        h.results.theta(iFrame) = res.theta;
-        h.results.goodFit(iFrame) = res.isEllipse;
-        h.results.blink(iFrame) = isBlink;
-        h.results.blinkRho(iFrame) = blinkRho;
-        h.results.gaussStd(iFrame) = params.gaussStd;
-        h.results.threshold(iFrame) = params.thresh;
-        h.results.roi(iFrame, :) = h.roi;
-        h.results.blinkRoi(iFrame, :) = h.blinkRoi;
-        h.results.equation{iFrame} = res.eq;
-        h.results.xxContour{iFrame} = res.xxEdge+xShift;
-        h.results.yyContour{iFrame} = res.yyEdge+yShift;
-        h.results.xxEllipse{iFrame} = res.xxEllipse+xShift;
-        h.results.yyEllipse{iFrame} = res.yyEllipse+yShift;
-        h.analyzedFrames(iFrame) = true;
-        if ~mod(i,100)
+        h.results.x(frameIdx) = res.x0+xShift;
+        h.results.y(frameIdx) = res.y0+yShift;
+        h.results.area(frameIdx) = res.area;
+        h.results.aAxis(frameIdx) = res.a;
+        h.results.bAxis(frameIdx) = res.b;
+        h.results.theta(frameIdx) = res.theta;
+        h.results.goodFit(frameIdx) = res.isEllipse;
+        h.results.blink(frameIdx) = isBlink;
+        h.results.blinkRho(frameIdx) = blinkRho;
+        h.results.gaussStd(frameIdx) = params.gaussStd;
+        h.results.threshold(frameIdx) = params.thresh;
+        h.results.roi(frameIdx, :) = repmat(h.roi, length(frameIdx), 1);
+        h.results.blinkRoi(frameIdx, :) = repmat(h.blinkRoi, length(frameIdx), 1);
+        h.results.equation(frameIdx) = res.eq;
+        h.results.xxContour(frameIdx) = cellfun(@plus, res.xxEdge, xShiftCell, 'UniformOutput', false);
+        h.results.yyContour(frameIdx) = cellfun(@plus, res.yyEdge, yShiftCell, 'UniformOutput', false);
+        h.results.xxEllipse(frameIdx) = cellfun(@plus, res.xxEllipse, xShiftCell, 'UniformOutput', false);
+        h.results.yyEllipse(frameIdx) = cellfun(@plus, res.yyEllipse, yShiftCell, 'UniformOutput', false);
+        h.analyzedFrames(frameIdx) = true;
+%         if ~mod(i,100)
             tNow = toc(tStart);
-            fps = i/tNow;
-            tLeft = (length(h.framesToAnalyze)-i)/fps;
+            fps = iBatch*batchSize/tNow;
+            tLeft = (nFramesToAnalyze-iBatch*batchSize)/fps;
             h.AnalysisStatusText.String = ...
                 sprintf('%d/%d\t %3.0f fps \t%s  left', ...
-                i, length(h.framesToAnalyze), fps, ...
+                iEnd(iBatch), nFramesToAnalyze, fps, ...
                 duration(seconds(tLeft), 'Format', 'hh:mm:ss'));
             guidata(hObject, h);
             drawnow;
-        end
-        i = i + 1;
+%         end
+        iBatch = iBatch + 1;
     end
-    if i>1 % if there actually has been some analysis done
+    if iBatch>1 % if there actually has been some analysis done
         h.AnalysisStatusText.String = ...
             sprintf('%d/%d\t %3.0f fps \t%s  left', ...
-            i-1, length(h.framesToAnalyze), fps, ...
+            iEnd(iBatch-1), nFramesToAnalyze, fps, ...
             duration(seconds(tLeft), 'Format', 'hh:mm:ss'));
     end
     h.framesToAnalyze = [];

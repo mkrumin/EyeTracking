@@ -1,4 +1,4 @@
-function plotResults(res, h)
+function plotResults(res, h, color)
 
 hold on;
 xShift = res.roi(1)-1;
@@ -8,16 +8,16 @@ xlim(h.Axes, xlim(h.Axes));
 ylim(h.Axes, ylim(h.Axes));
 
 if h.CenterCheck.Value
-    plot(h.Axes, res.x0+xShift, res.y0+yShift, 'ro');
+    plot(h.Axes, res.x0+xShift, res.y0+yShift, 'o', 'Color', color);
 end
 
 if h.EdgeCheck.Value
-    plot(h.Axes, res.xxEdge+xShift, res.yyEdge+yShift, 'c.');
+    plot(h.Axes, res.xxEdge+xShift, res.yyEdge+yShift, '.', 'Color', color);
 end
 
 if h.EllipseCheck.Value
     % plot the ellipse
-    plot(h.Axes, res.xxEllipse+xShift, res.yyEllipse+yShift, 'g');
+    plot(h.Axes, res.xxEllipse+xShift, res.yyEllipse+yShift, '-', 'Color', color);
     % plot the cross
 %     len = length(res.xxEllipse)-1;
 %     xx = res.xxEllipse([1 1+round((len)/2)])+xShift;

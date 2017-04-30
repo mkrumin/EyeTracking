@@ -1,5 +1,11 @@
 function h = plotTraces(hObject, eventdata, h)
 
+
+if sum(h.analyzedFrames & ~h.results.blink)<2
+    % do not plot anything if there are less than 2 frames without blinks
+    % prevents crashes from happening
+    return;
+end
 % open the figure
 if isfield(h, 'plotHandles')
     figure(h.plotHandles.figure);
@@ -57,7 +63,7 @@ else
     try
         set(h.plotHandles.figure, 'Name', sprintf('Results for %s', h.FileName));
     end
-    % Do not delete the figure when close, just make it invisible
+    % Do not delete the figure when closed, just make it invisible
     set(h.plotHandles.figure, 'CloseRequestFcn', 'set(gcf, ''Visible'', ''off'');');
     
     idx = find(h.analyzedFrames);

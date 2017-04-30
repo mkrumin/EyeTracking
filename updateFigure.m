@@ -27,6 +27,8 @@ if h.analyzedFrames(h.iFrame)
     text(max(xlim), max(ylim), 'Replay', ...
         'HorizontalAlignment', 'Right', 'VerticalAlignment', 'Bottom',...
         'FontSize', 20, 'Color', [0 1 1]);
+    h.replayStdText.String = sprintf('std: %s', num2str(h.results.gaussStd(h.iFrame)));
+    h.replayThrText.String = sprintf('std: %3.1f', h.results.threshold(h.iFrame));
 end
 if doAnalysis
     params.gaussStd = h.FilterSizeEdit.Value;

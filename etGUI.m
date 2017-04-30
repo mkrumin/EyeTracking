@@ -27,11 +27,11 @@ function varargout = etGUI(varargin)
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
-                   'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @etGUI_OpeningFcn, ...
-                   'gui_OutputFcn',  @etGUI_OutputFcn, ...
-                   'gui_LayoutFcn',  [] , ...
-                   'gui_Callback',   []);
+    'gui_Singleton',  gui_Singleton, ...
+    'gui_OpeningFcn', @etGUI_OpeningFcn, ...
+    'gui_OutputFcn',  @etGUI_OutputFcn, ...
+    'gui_LayoutFcn',  [] , ...
+    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
     gui_State.gui_Callback = str2func(varargin{1});
 end
@@ -58,8 +58,8 @@ set(hObject, 'CloseRequestFcn', @close_etGUI);
 
 handles.Axes.Visible = 'off';
 handles.OriginalRadio.Value = 1;
-handles.FilterSizeEdit.Value = 2; 
-handles.FilterSizeEdit.String = '2'; 
+handles.FilterSizeEdit.Value = 2;
+handles.FilterSizeEdit.String = '2';
 handles.PlotPush.Enable = 'on';
 handles.AutoPush.Enable = 'off';
 handles.CenterCheck.Value = false;
@@ -86,7 +86,7 @@ guidata(hObject, handles);
 
 
 % --- Outputs from this function are returned to the command line.
-function varargout = etGUI_OutputFcn(hObject, eventdata, handles) 
+function varargout = etGUI_OutputFcn(hObject, eventdata, handles)
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -396,9 +396,14 @@ function fileOpen_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-handles = openfile(hObject, eventdata, handles);
-updateFigure(hObject, eventdata, handles);
-guidata(hObject, handles);
+[handles, errFlag] = openfile(hObject, eventdata, handles);
+if (errFlag == 0)
+    updateFigure(hObject, eventdata, handles);
+    guidata(hObject, handles);
+else
+    % do nothing,
+    % errFlag == -1 ==> no file was selected to be opened
+end
 
 % --------------------------------------------------------------------
 function fileSave_Callback(hObject, eventdata, handles)
@@ -434,9 +439,13 @@ function fileLoad_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-handles = fileLoad(hObject, eventdata, handles);
-guidata(hObject, handles);
-updateFigure(hObject, eventdata, handles);
+[handles, errFlag] = fileLoad(hObject, eventdata, handles);
+if errFlag == 0
+    guidata(hObject, handles);
+    updateFigure(hObject, eventdata, handles);
+else
+    % do nothing, something went wrong, most likely no file was selected
+end
 
 % --------------------------------------------------------------------
 function Edit_Callback(hObject, eventdata, handles)

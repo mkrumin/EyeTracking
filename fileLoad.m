@@ -1,5 +1,6 @@
-function h = fileLoad(hObject, eventdata, h)
+function [h, errFlag] = fileLoad(hObject, eventdata, h)
 
+errFlag = 0;
 % uigetfile
 if isfield(h, 'CurrentResultsFolder')
     [FileName, PathName, ~] = ...
@@ -8,7 +9,14 @@ else
     [FileName, PathName, ~] = ...
         uigetfile('*.mat', 'Load Results File...', h.CurrentFolder);
 end
-load(fullfile(PathName, FileName));
+
+if FileName ~= 0
+    load(fullfile(PathName, FileName));
+else
+    warning('No file was selected');
+    errFlag = -1;
+    return;
+end
 
 if ~isfield(h, 'FileName')
     % there is no video file open yet. let' sopen the one correcponding to

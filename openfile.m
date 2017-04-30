@@ -1,11 +1,18 @@
-function h = openfile(hObject, eventdata, h, providedFileName)
+function [h, errFlag] = openfile(hObject, eventdata, h, providedFileName)
 
+errFlag = 0;
 if nargin < 4
-    [FileName, PathName, ~] = ...
-        uigetfile('*.mj2', 'Open Video File...', h.CurrentFolder);
+    if exist(h.CurrentFolder, 'dir')
+        [FileName, PathName, ~] = ...
+            uigetfile('*.mj2', 'Open Video File...', h.CurrentFolder);
+    else
+        [FileName, PathName, ~] = ...
+            uigetfile('*.mj2', 'Open Video File...', pwd);
+    end
     
     if FileName==0
         warning('No file was selected');
+        errFlag = -1;
         return;
     end
 else

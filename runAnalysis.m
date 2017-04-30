@@ -1,6 +1,7 @@
 function h = runAnalysis(hObject, eventdata, h)
 
 batchSize = 1000;
+fps = 0; % prevents an occasional weird bug when updating analysis status text
 if hObject.Value
     % set h.framesToAnalyze (might not be set correctly)
     etGUI('OverwriteCheck_Callback',h.OverwriteCheck, eventdata, h);
@@ -26,8 +27,8 @@ if hObject.Value
         
         xShift = h.roi(1)-1;
         yShift = h.roi(2)-1;
-        xShiftCell = repmat({xShift}, length(frameIdx), 1); 
-        yShiftCell = repmat({yShift}, length(frameIdx), 1); 
+        xShiftCell = repmat({xShift}, length(frameIdx), 1);
+        yShiftCell = repmat({yShift}, length(frameIdx), 1);
         
         h.results.x(frameIdx) = res.x0+xShift;
         h.results.y(frameIdx) = res.y0+yShift;
@@ -48,17 +49,17 @@ if hObject.Value
         h.results.xxEllipse(frameIdx) = cellfun(@plus, res.xxEllipse, xShiftCell, 'UniformOutput', false);
         h.results.yyEllipse(frameIdx) = cellfun(@plus, res.yyEllipse, yShiftCell, 'UniformOutput', false);
         h.analyzedFrames(frameIdx) = true;
-%         if ~mod(i,100)
-            tNow = toc(tStart);
-            fps = iBatch*batchSize/tNow;
-            tLeft = (nFramesToAnalyze-iBatch*batchSize)/fps;
-            h.AnalysisStatusText.String = ...
-                sprintf('%d/%d\t %3.0f fps \t%s  left', ...
-                iEnd(iBatch), nFramesToAnalyze, fps, ...
-                duration(seconds(tLeft), 'Format', 'hh:mm:ss'));
-            guidata(hObject, h);
-            drawnow;
-%         end
+
+        tNow = toc(tStart);
+        fps = iBatch*batchSize/tNow;
+        tLeft = (nFramesToAnalyze-iBatch*batchSize)/fps;
+        h.AnalysisStatusText.String = ...
+            sprintf('%d/%d\t %3.0f fps \t%s  left', ...
+            iEnd(iBatch), nFramesToAnalyze, fps, ...
+            duration(seconds(tLeft), 'Format', 'hh:mm:ss'));
+        guidata(hObject, h);
+        drawnow;
+
         iBatch = iBatch + 1;
     end
     if iBatch>1 % if there actually has been some analysis done

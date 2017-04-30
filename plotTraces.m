@@ -7,8 +7,6 @@ if isfield(h, 'plotHandles')
     
     idx = find(h.analyzedFrames);
     blinkIdx = find(h.analyzedFrames & h.results.blink);
-    % analyzed, but not blink frames - used for ylim
-    nonBlinkIdx = find(h.analyzedFrames & ~h.results.blink);
     framesAxis = 1:h.vr.NumberOfFrames;
     
     h.plotHandles.xPlot.XData = framesAxis(idx);
@@ -50,11 +48,6 @@ if isfield(h, 'plotHandles')
         hold off;
         
     end
-    
-    ylim(h.plotHandles.xAxes, [min(h.results.x(nonBlinkIdx)), max(h.results.x(nonBlinkIdx))]);
-    ylim(h.plotHandles.yAxes, [min(h.results.y(nonBlinkIdx)), max(h.results.y(nonBlinkIdx))]);
-    ylim(h.plotHandles.areaAxes, [min(h.results.area(nonBlinkIdx)), max(h.results.area(nonBlinkIdx))]);
-    
     
 else
     h.plotHandles.figure = figure;

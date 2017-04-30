@@ -22,7 +22,7 @@ function varargout = etGUI(varargin)
 
 % Edit the above text to modify the response to help etGUI
 
-% Last Modified by GUIDE v2.5 26-Apr-2017 19:25:58
+% Last Modified by GUIDE v2.5 30-Apr-2017 01:15:26
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -703,3 +703,12 @@ function runBatch_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 etBatch(handles.figure1);
+
+
+% --- Executes during object creation, after setting all properties.
+function PlotPush_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to PlotPush (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+set(hObject, 'ButtonDownFcn', @plotClick);

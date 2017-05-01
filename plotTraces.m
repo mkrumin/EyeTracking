@@ -32,7 +32,16 @@ if isfield(h, 'plotHandles')
         h.plotHandles.areaBlinks.XData = framesAxis(blinkIdx);
         h.plotHandles.areaBlinks.YData = h.results.area(blinkIdx);
         h.plotHandles.rhoBlinks.XData = framesAxis(blinkIdx);
-        h.plotHandles.rhoBlinks.YData = h.results.blinkRho(blinkIdx);
+        h.plotHandles.rhoBlinks.YData = h.results.blinkRho(blinkIdx);   
+        h.plotHandles.xCurrent.XData = [h.iFrame, h.iFrame];
+        h.plotHandles.xCurrent.YData = [min(h.results.x) max(h.results.x)];
+        h.plotHandles.yCurrent.XData = [h.iFrame, h.iFrame];
+        h.plotHandles.yCurrent.YData = [min(h.results.y) max(h.results.y)];
+        h.plotHandles.areaCurrent.XData = [h.iFrame, h.iFrame];
+        h.plotHandles.areaCurrent.YData = [min(h.results.area) max(h.results.area)];
+        h.plotHandles.rhoCurrent.XData = [h.iFrame, h.iFrame];
+        h.plotHandles.rhoCurrent.YData = [0 1];
+
     catch
         % if initially there were no blanks during the first run of the function
         % we need to plot them using plot(), to generate proper handles
@@ -76,6 +85,7 @@ else
     h.plotHandles.xPlot = plot(framesAxis(idx), h.results.x(idx));
     hold on;
     h.plotHandles.xBlinks = plot(framesAxis(blinkIdx), h.results.x(blinkIdx), 'r.');
+    h.plotHandles.xCurrent = plot([h.iFrame, h.iFrame], [min(h.results.x) max(h.results.x)], 'k:');
     hold off;
     ylabel('X_{pos} [px]');
     xlim([1, h.vr.NumberOfFrames]);
@@ -86,6 +96,7 @@ else
     h.plotHandles.yPlot = plot(framesAxis(idx), h.results.y(idx));
     hold on;
     h.plotHandles.yBlinks = plot(framesAxis(blinkIdx), h.results.y(blinkIdx), 'r.');
+    h.plotHandles.yCurrent = plot([h.iFrame, h.iFrame], [min(h.results.y) max(h.results.y)], 'k:');
     hold off;
     ylabel('Y_{pos} [px]');
     xlim([1, h.vr.NumberOfFrames]);
@@ -95,6 +106,7 @@ else
     h.plotHandles.areaPlot = plot(framesAxis(idx), h.results.area(idx));
     hold on;
     h.plotHandles.areaBlinks = plot(framesAxis(blinkIdx), h.results.area(blinkIdx), 'r.');
+    h.plotHandles.areaCurrent = plot([h.iFrame, h.iFrame], [min(h.results.area) max(h.results.area)], 'k:');
     hold off;
     xlabel('Frame #');
     ylabel('Area [px^2]');
@@ -105,6 +117,7 @@ else
     h.plotHandles.rhoPlot = plot(framesAxis(idx), h.results.blinkRho(idx));
     hold on;
     h.plotHandles.rhoBlinks = plot(framesAxis(blinkIdx), h.results.blinkRho(blinkIdx), 'r.');
+    h.plotHandles.rhoCurrent = plot([h.iFrame, h.iFrame], [0 1], 'k:');
     hold off;
     xlabel('Frame #');
     ylabel('blink \rho');

@@ -415,11 +415,8 @@ h = handles;
 results = h.results;
 state = getCurrentState(h);
 [~, fn, ~] = fileparts(h.FileName);
-if isfield(h, 'CurrentResultsFolder')
-    filename = fullfile(h.CurrentResultsFolder, [fn, '_processed.mat']);
-else
-    filename = fullfile(h.CurrentFolder, [fn, '_processed.mat']);
-end
+% the results are saved in the same folder as the video file
+filename = fullfile(h.CurrentFolder, [fn, '_processed.mat']);
 save(filename, 'results', 'state');
 h.lastFileSaved = filename;
 guidata(hObject, h);

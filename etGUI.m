@@ -55,6 +55,7 @@ function etGUI_OpeningFcn(hObject, eventdata, handles, varargin)
 % let's turn off these useless and annoying warnings off
 warning('off', 'MATLAB:nargchk:deprecated')
 set(hObject, 'CloseRequestFcn', @close_etGUI);
+set(hObject, 'WindowKeyPressFcn', @processKeyPress);
 
 handles.Axes.Visible = 'off';
 handles.OriginalRadio.Value = 1;
@@ -71,6 +72,13 @@ handles.CropCheck.Value = false;
 handles.fileSave.Enable = 'off';
 handles.editPreferences.Enable = 'off';
 handles = assignTooltips(handles);
+
+pos = handles.PreviewToggle.Position;
+tt = uicontrol(hObject, 'Style', 'Text');
+tt.Units = 'characters';
+tt.Position = pos + [-30 -2 10 1];
+tt.String = 'Ctrl+S will overwrite the results for this frame';
+tt.FontWeight = 'bold';
 
 % handles.CurrentFolder = 'C:\DATA\';
 handles.CurrentFolder = '\\zserver.cortexlab.net\Data\EyeCamera';
@@ -265,6 +273,7 @@ function RunToggle_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 handles = runAnalysis(hObject, eventdata, handles);
+updateFigure(hObject, eventData, handles);
 guidata(hObject, handles);
 
 
@@ -709,7 +718,6 @@ function runBatch_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 etBatch(handles.figure1);
-
 
 % --- Executes during object creation, after setting all properties.
 function PlotPush_CreateFcn(hObject, eventdata, handles)

@@ -11,6 +11,8 @@ if isempty(tmp)
     h.ReplaySlider.Value = h.ReplaySlider.Min;
     h.ReplaySlider.SliderStep = [0.01, 0.1];
 else
+    h.ReplaySlider.Min = 1;
+    h.ReplaySlider.Max = len;
     h.ReplaySlider.Value = tmp;
     h.ReplaySlider.SliderStep = [min(1, 1/len), min(1, 10/len)];
 end
@@ -49,5 +51,5 @@ text(min(xlim), max(ylim), 'Preview', ...
     'HorizontalAlignment', 'Left', 'VerticalAlignment', 'Bottom',...
     'FontSize', 20, 'Color', [1 0.5 0]);
 
-drawnow limitrate;
-
+% this is a very important option of drawnow to keep things properly synchronized
+drawnow nocallbacks;

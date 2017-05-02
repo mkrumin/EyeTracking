@@ -22,6 +22,7 @@ h.AnalysisStatusText.TooltipString = 'Current status of the analysis';
 h.OverwriteCheck.TooltipString = 'Do you want to overwrite results of already analyzed frames?';
 h.RangeEdit.TooltipString = 'Which frames to analyze? Use MATLAB vector notation or ''frameRange'' global variable in your workspace';
 h.RunToggle.TooltipString = 'Run/stop the analysis (no graphics)';
+h.BlinksOnlyCheck.TooltipString = sprintf('Only analyze blinks and keep the pupil data intact\nRemember to UNtick before doing batch processing');
 h.BlinkCheck.TooltipString = 'Show blinks during Preview/Replay';
 h.CropCheck.TooltipString = 'Show only ROI portion of the image';
 h.ROICheck.TooltipString = 'Show ROIs';

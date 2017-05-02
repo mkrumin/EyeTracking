@@ -1,6 +1,7 @@
 function h = runAnalysis(hObject, eventdata, h)
 
 batchSize = 1000;
+blinksOnly = h.BlinksOnlyCheck.Value;
 fps = 0; % prevents an occasional weird bug when updating analysis status text
 if hObject.Value
     % set h.framesToAnalyze (might not be set correctly)
@@ -18,38 +19,42 @@ if hObject.Value
     while hObject.Value && iBatch<=nBatches
         frameIdx = h.framesToAnalyze(iStart(iBatch):iEnd(iBatch));
         frames = readBatch(h.vr, frameIdx);
-        params.gaussStd = h.FilterSizeEdit.Value;
-        params.thresh = h.ThresholdSlider.Value;
-        xSpan = h.roi(1):sum(h.roi([1, 3]))-1;
-        ySpan = h.roi(2):sum(h.roi([2, 4]))-1;
-        res = analyzeBatch(frames(ySpan, xSpan, :), params);
+        
+        if ~blinksOnly
+            params.gaussStd = h.FilterSizeEdit.Value;
+            params.thresh = h.ThresholdSlider.Value;
+            xSpan = h.roi(1):sum(h.roi([1, 3]))-1;
+            ySpan = h.roi(2):sum(h.roi([2, 4]))-1;
+            res = analyzeBatch(frames(ySpan, xSpan, :), params);
+            
+            xShift = h.roi(1)-1;
+            yShift = h.roi(2)-1;
+            xShiftCell = repmat({xShift}, length(frameIdx), 1);
+            yShiftCell = repmat({yShift}, length(frameIdx), 1);
+            
+            h.results.x(frameIdx) = res.x0+xShift;
+            h.results.y(frameIdx) = res.y0+yShift;
+            h.results.area(frameIdx) = res.area;
+            h.results.aAxis(frameIdx) = res.a;
+            h.results.bAxis(frameIdx) = res.b;
+            h.results.theta(frameIdx) = res.theta;
+            h.results.goodFit(frameIdx) = res.isEllipse;
+            h.results.gaussStd(frameIdx) = params.gaussStd;
+            h.results.threshold(frameIdx) = params.thresh;
+            h.results.roi(frameIdx, :) = repmat(h.roi, length(frameIdx), 1);
+            h.results.equation(frameIdx) = res.eq;
+            h.results.xxContour(frameIdx) = cellfun(@plus, res.xxEdge, xShiftCell, 'UniformOutput', false);
+            h.results.yyContour(frameIdx) = cellfun(@plus, res.yyEdge, yShiftCell, 'UniformOutput', false);
+            h.results.xxEllipse(frameIdx) = cellfun(@plus, res.xxEllipse, xShiftCell, 'UniformOutput', false);
+            h.results.yyEllipse(frameIdx) = cellfun(@plus, res.yyEllipse, yShiftCell, 'UniformOutput', false);
+            h.analyzedFrames(frameIdx) = true;
+        end
+        
         [isBlink, blinkRho] = detectBlinkBatch(frames, h);
-        
-        xShift = h.roi(1)-1;
-        yShift = h.roi(2)-1;
-        xShiftCell = repmat({xShift}, length(frameIdx), 1);
-        yShiftCell = repmat({yShift}, length(frameIdx), 1);
-        
-        h.results.x(frameIdx) = res.x0+xShift;
-        h.results.y(frameIdx) = res.y0+yShift;
-        h.results.area(frameIdx) = res.area;
-        h.results.aAxis(frameIdx) = res.a;
-        h.results.bAxis(frameIdx) = res.b;
-        h.results.theta(frameIdx) = res.theta;
-        h.results.goodFit(frameIdx) = res.isEllipse;
         h.results.blink(frameIdx) = isBlink;
         h.results.blinkRho(frameIdx) = blinkRho;
-        h.results.gaussStd(frameIdx) = params.gaussStd;
-        h.results.threshold(frameIdx) = params.thresh;
-        h.results.roi(frameIdx, :) = repmat(h.roi, length(frameIdx), 1);
         h.results.blinkRoi(frameIdx, :) = repmat(h.blinkRoi, length(frameIdx), 1);
-        h.results.equation(frameIdx) = res.eq;
-        h.results.xxContour(frameIdx) = cellfun(@plus, res.xxEdge, xShiftCell, 'UniformOutput', false);
-        h.results.yyContour(frameIdx) = cellfun(@plus, res.yyEdge, yShiftCell, 'UniformOutput', false);
-        h.results.xxEllipse(frameIdx) = cellfun(@plus, res.xxEllipse, xShiftCell, 'UniformOutput', false);
-        h.results.yyEllipse(frameIdx) = cellfun(@plus, res.yyEllipse, yShiftCell, 'UniformOutput', false);
-        h.analyzedFrames(frameIdx) = true;
-
+        
         tNow = toc(tStart);
         fps = iBatch*batchSize/tNow;
         tLeft = (nFramesToAnalyze-iBatch*batchSize)/fps;
@@ -59,7 +64,7 @@ if hObject.Value
             char(duration(seconds(tLeft), 'Format', 'hh:mm:ss')));
         guidata(hObject, h);
         drawnow;
-
+        
         iBatch = iBatch + 1;
     end
     if iBatch>1 % if there actually has been some analysis done

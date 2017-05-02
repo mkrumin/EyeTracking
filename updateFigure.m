@@ -25,10 +25,14 @@ if h.analyzedFrames(h.iFrame)
     % [x,y] in res are already roi-corrected, co for plotResults purposes:
     res.roi = [1 1 h.vr.Width h.vr.Height];
     plotResults(res, h, [0 1 1]);
-    plotBlink = plotBlink && res.blink;
     text(max(xlim), max(ylim), 'Replay', ...
         'HorizontalAlignment', 'Right', 'VerticalAlignment', 'Bottom',...
         'FontSize', 20, 'Color', [0 1 1]);
+    if plotBlink && res.blink
+        text(max(xlim), min(ylim), 'B', ...
+            'HorizontalAlignment', 'Right', 'VerticalAlignment', 'Cap',...
+            'FontSize', 20, 'Color', [1 0 0]);
+    end
     h.replayStdText.String = sprintf('std: %s', num2str(h.results.gaussStd(h.iFrame)));
     h.replayThrText.String = sprintf('std: %3.1f', h.results.threshold(h.iFrame));
 end
@@ -41,15 +45,23 @@ if doAnalysis
     res.roi = h.roi;
     plotResults(res, h, [1 0.5 0]);
 end
-if plotBlink
-    plotBlink = plotBlink && detectBlink(h.CurrentFrame, h);
-end
-if plotBlink
-    colormap(h.Axes, [0:1/63:1; zeros(1, 64); zeros(1, 64)]');
-end
 text(min(xlim), max(ylim), 'Preview', ...
     'HorizontalAlignment', 'Left', 'VerticalAlignment', 'Bottom',...
     'FontSize', 20, 'Color', [1 0.5 0]);
+if plotBlink && detectBlink(h.CurrentFrame, h)
+    text(min(xlim), min(ylim), 'B', ...
+        'HorizontalAlignment', 'Left', 'VerticalAlignment', 'Cap',...
+        'FontSize', 20, 'Color', [1 0 0]);
+end
 
 % this is a very important option of drawnow to keep things properly synchronized
-drawnow nocallbacks;
+if isequal(hObject.Type, 'uicontrol') && isequal(hObject.Style, 'slider')
+    % if the update is called from the slider prevent the callback execution,
+    % otherwise, if the slider is held down things will get out of sync
+    drawnow nocallbacks;
+else
+    % if it is a button, then you can't ignore callbacks, as then you won't
+    % be able to stop the playback. 
+    % Only limit the graphics update rate, and allow the callbacks
+    drawnow limitrate;
+end

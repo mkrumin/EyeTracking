@@ -22,7 +22,7 @@ function varargout = etGUI(varargin)
 
 % Edit the above text to modify the response to help etGUI
 
-% Last Modified by GUIDE v2.5 30-Apr-2017 01:15:26
+% Last Modified by GUIDE v2.5 02-May-2017 13:51:31
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -92,7 +92,6 @@ guidata(hObject, handles);
 % UIWAIT makes etGUI wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 
-
 % --- Outputs from this function are returned to the command line.
 function varargout = etGUI_OutputFcn(hObject, eventdata, handles)
 % varargout  cell array for returning output args (see VARARGOUT);
@@ -103,7 +102,6 @@ function varargout = etGUI_OutputFcn(hObject, eventdata, handles)
 % Get default command line output from handles structure
 
 varargout{1} = handles.output;
-
 
 % --- Executes on slider movement.
 function FrameSlider_Callback(hObject, eventdata, handles)
@@ -130,7 +128,6 @@ function FrameSlider_CreateFcn(hObject, eventdata, handles)
 if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor',[.9 .9 .9]);
 end
-
 
 % --- Executes on button press in AutoPush.
 function AutoPush_Callback(hObject, eventdata, handles)
@@ -162,7 +159,6 @@ if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColo
     set(hObject,'BackgroundColor',[.9 .9 .9]);
 end
 
-
 % --- Executes on slider movement.
 function MinSlider_Callback(hObject, eventdata, handles)
 % hObject    handle to MinSlider (see GCBO)
@@ -185,7 +181,6 @@ function MinSlider_CreateFcn(hObject, eventdata, handles)
 if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor',[.9 .9 .9]);
 end
-
 
 % --- Executes on slider movement.
 function ThresholdSlider_Callback(hObject, eventdata, handles)
@@ -210,7 +205,6 @@ if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColo
     set(hObject,'BackgroundColor',[.9 .9 .9]);
 end
 
-
 % --- Executes on button press in CenterCheck.
 function CenterCheck_Callback(hObject, eventdata, handles)
 % hObject    handle to CenterCheck (see GCBO)
@@ -220,7 +214,6 @@ function CenterCheck_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of CenterCheck
 
 updateFigure(hObject, eventdata, handles);
-
 
 % --- Executes on button press in EdgeCheck.
 function EdgeCheck_Callback(hObject, eventdata, handles)
@@ -232,7 +225,6 @@ function EdgeCheck_Callback(hObject, eventdata, handles)
 
 updateFigure(hObject, eventdata, handles);
 
-
 % --- Executes on button press in EllipseCheck.
 function EllipseCheck_Callback(hObject, eventdata, handles)
 % hObject    handle to EllipseCheck (see GCBO)
@@ -242,7 +234,6 @@ function EllipseCheck_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of EllipseCheck
 
 updateFigure(hObject, eventdata, handles);
-
 
 % --- Executes on button press in ROICheck.
 function ROICheck_Callback(hObject, eventdata, handles)
@@ -254,7 +245,6 @@ function ROICheck_Callback(hObject, eventdata, handles)
 
 updateFigure(hObject, eventdata, handles);
 
-
 % --- Executes on button press in CropCheck.
 function CropCheck_Callback(hObject, eventdata, handles)
 % hObject    handle to CropCheck (see GCBO)
@@ -265,7 +255,6 @@ function CropCheck_Callback(hObject, eventdata, handles)
 
 updateFigure(hObject, eventdata, handles);
 
-
 % --- Executes on button press in RunToggle.
 function RunToggle_Callback(hObject, eventdata, handles)
 % hObject    handle to RunToggle (see GCBO)
@@ -273,9 +262,8 @@ function RunToggle_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 handles = runAnalysis(hObject, eventdata, handles);
-updateFigure(hObject, eventData, handles);
+updateFigure(hObject, eventdata, handles);
 guidata(hObject, handles);
-
 
 function FilterSizeEdit_Callback(hObject, eventdata, handles)
 % hObject    handle to FilterSizeEdit (see GCBO)
@@ -309,7 +297,6 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
-
 % --- Executes on button press in PreviewToggle.
 function PreviewToggle_Callback(hObject, eventdata, handles)
 % hObject    handle to PreviewToggle (see GCBO)
@@ -338,7 +325,6 @@ function PlotPush_Callback(hObject, eventdata, handles)
 
 handles = plotTraces(hObject, eventdata, handles);
 guidata(hObject, handles);
-
 
 function GotoEdit_Callback(hObject, eventdata, handles)
 % hObject    handle to GotoEdit (see GCBO)
@@ -374,7 +360,6 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
-
 % --- Executes on button press in ROIPush.
 function ROIPush_Callback(hObject, eventdata, handles)
 % hObject    handle to ROIPush (see GCBO)
@@ -391,13 +376,11 @@ handles.ROICheck.Value = 1;
 updateFigure(hObject, eventdata, handles);
 guidata(hObject, handles);
 
-
 % --------------------------------------------------------------------
 function File_Callback(hObject, eventdata, handles)
 % hObject    handle to File (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
 
 % --------------------------------------------------------------------
 function fileOpen_Callback(hObject, eventdata, handles)
@@ -465,7 +448,6 @@ function editPreferences_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-
 % --- Executes on slider movement.
 function FineFrameSlider_Callback(hObject, eventdata, handles)
 % hObject    handle to FineFrameSlider (see GCBO)
@@ -492,7 +474,6 @@ if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColo
     set(hObject,'BackgroundColor',[.9 .9 .9]);
 end
 
-
 % --- Executes on button press in OriginalRadio.
 function OriginalRadio_Callback(hObject, eventdata, handles)
 % hObject    handle to OriginalRadio (see GCBO)
@@ -512,7 +493,6 @@ function FilteredRadio_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of FilteredRadio
 
 updateFigure(hObject, eventdata, handles);
-
 
 % --- Executes on button press in BWRadio.
 function BWRadio_Callback(hObject, eventdata, handles)
@@ -567,7 +547,6 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
-
 % --- Executes on button press in OverwriteCheck.
 function OverwriteCheck_Callback(hObject, eventdata, handles)
 % hObject    handle to OverwriteCheck (see GCBO)
@@ -586,7 +565,6 @@ end
 h.AnalysisStatusText.String = sprintf('1/%d\t xxx fps \thh:mm:ss  left', length(h.framesToAnalyze));
 
 guidata(hObject, h);
-
 
 % --- Executes on button press in ReplayToggle.
 function ReplayToggle_Callback(hObject, eventdata, handles)
@@ -618,7 +596,6 @@ hObject.String = 'Replay';
 hObject.BackgroundColor = [1 1 1]*0.94;
 guidata(hObject, h);
 
-
 % --- Executes on button press in BlinkROIPush.
 function BlinkROIPush_Callback(hObject, eventdata, handles)
 % hObject    handle to BlinkROIPush (see GCBO)
@@ -634,7 +611,6 @@ handles.BlinkCheck.Value = 1;
 
 updateFigure(hObject, eventdata, handles);
 guidata(hObject, handles);
-
 
 function BlinkRhoEdit_Callback(hObject, eventdata, handles)
 % hObject    handle to BlinkRhoEdit (see GCBO)
@@ -670,7 +646,6 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
-
 % --- Executes on button press in BlinkCheck.
 function BlinkCheck_Callback(hObject, eventdata, handles)
 % hObject    handle to BlinkCheck (see GCBO)
@@ -680,7 +655,6 @@ function BlinkCheck_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of BlinkCheck
 
 updateFigure(hObject, eventdata, handles);
-
 
 % --- Executes on slider movement.
 function ReplaySlider_Callback(hObject, eventdata, handles)
@@ -696,7 +670,7 @@ idx = find(handles.analyzedFrames);
 handles.iFrame = idx(hObject.Value);
 handles.CurrentFrame = read(handles.vr, handles.iFrame);
 % call udateFigure() as if from the ReplayToggle Callback
-updateFigure(handles.ReplayToggle, eventdata, handles);
+updateFigure(hObject, eventdata, handles);
 guidata(hObject, handles);
 
 % --- Executes during object creation, after setting all properties.
@@ -709,7 +683,6 @@ function ReplaySlider_CreateFcn(hObject, eventdata, handles)
 if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor',[.9 .9 .9]);
 end
-
 
 % --------------------------------------------------------------------
 function runBatch_Callback(hObject, eventdata, handles)
@@ -726,3 +699,11 @@ function PlotPush_CreateFcn(hObject, eventdata, handles)
 % handles    empty - handles not created until after all CreateFcns called
 
 set(hObject, 'ButtonDownFcn', @plotClick);
+
+% --- Executes on button press in BlinksOnlyCheck.
+function BlinksOnlyCheck_Callback(hObject, eventdata, handles)
+% hObject    handle to BlinksOnlyCheck (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of BlinksOnlyCheck

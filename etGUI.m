@@ -74,6 +74,7 @@ handles.fileSave.Enable = 'off';
 handles.editPreferences.Enable = 'off';
 handles.FilenameText.Position = handles.FilenameText.Position +...
     [-25 0 50 1];
+handles.OverwriteCheck.String = 'Reanalyze and overwrite?';
 handles = assignTooltips(handles);
 
 pos = handles.PreviewToggle.Position;

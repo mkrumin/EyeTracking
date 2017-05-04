@@ -97,6 +97,13 @@ end
 
 h.AnalysisStatusText.String = sprintf('1/%d\t xxx fps \thh:mm:ss  left', length(h.framesToAnalyze));
 
+% if results figure exists delete it, so that the next time all the axes
+% are reset to the proper values related to the new dataset
+if isfield(h, 'plotHandles')
+    delete(h.plotHandles.figure);
+    h = rmfield(h, 'plotHandles');
+end
+
 nFrames = h.vr.NumberOfFrames;
 h.results = struct([]);
 h.results(1).x = NaN(nFrames, 1);

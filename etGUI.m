@@ -56,6 +56,7 @@ function etGUI_OpeningFcn(hObject, eventdata, handles, varargin)
 warning('off', 'MATLAB:nargchk:deprecated')
 set(hObject, 'CloseRequestFcn', @close_etGUI);
 set(hObject, 'WindowKeyPressFcn', @processKeyPress);
+hObject.Resize = 'on';
 
 handles.Axes.Visible = 'off';
 handles.OriginalRadio.Value = 1;
@@ -71,6 +72,8 @@ handles.ROICheck.Value = false;
 handles.CropCheck.Value = false;
 handles.fileSave.Enable = 'off';
 handles.editPreferences.Enable = 'off';
+handles.FilenameText.Position = handles.FilenameText.Position +...
+    [-25 0 50 1];
 handles = assignTooltips(handles);
 
 pos = handles.PreviewToggle.Position;

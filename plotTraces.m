@@ -70,7 +70,8 @@ else
     set(h.plotHandles.figure, 'WindowButtonDownFcn', @clickAction);
     
     try
-        set(h.plotHandles.figure, 'Name', sprintf('Results for %s', h.FileName));
+        set(h.plotHandles.figure, 'Name',...
+            sprintf('Results for %s', fullfile(h.CurrentFolder, h.FileName)));
     end
     % Do not delete the figure when closed, just make it invisible
     set(h.plotHandles.figure, 'CloseRequestFcn', 'set(gcf, ''Visible'', ''off'');');

@@ -24,7 +24,7 @@ h.CurrentFolder = PathName;
 h.FileName = FileName;
 
 h.vr = VideoReader(fullfile(PathName, FileName));
-h.FilenameText.String = FileName;
+h.FilenameText.String = fullfile(PathName, FileName);
 nFramesToRead = 500; % this is the maximum, given that the movie is long enough
 singleFrame = read(h.vr, 1);
 [nr, nc] = size(singleFrame);

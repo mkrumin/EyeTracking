@@ -265,7 +265,11 @@ function RunToggle_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+disableAll(handles.figure1);
+hObject.Enable = 'on';
+handles.PlotPush.Enable = 'on';
 handles = runAnalysis(hObject, eventdata, handles);
+enableAll(handles.figure1);
 updateFigure(hObject, eventdata, handles);
 guidata(hObject, handles);
 
@@ -309,6 +313,12 @@ function PreviewToggle_Callback(hObject, eventdata, handles)
 
 h = handles;
 if hObject.Value
+    handles.ROIPush.Enable = 'off';
+    handles.BlinkROIPush.Enable = 'off';
+    handles.RunToggle.Enable = 'off';
+    handles.AutoPush.Enable = 'off';
+    handles.ReplayToggle.Enable = 'off';
+    handles.ReplaySlider.Enable = 'off';
     hObject.String = 'Stop';
 end
 while (hObject.Value) && h.iFrame<h.vr.NumberOfFrames
@@ -319,6 +329,7 @@ while (hObject.Value) && h.iFrame<h.vr.NumberOfFrames
 end
 hObject.Value = 0;
 hObject.String = 'Preview';
+enableAll(handles.figure1);
 guidata(hObject, h);
 
 % --- Executes on button press in PlotPush.
@@ -370,12 +381,14 @@ function ROIPush_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+disableAll(handles.figure1);
 hRect = imrect(handles.Axes, handles.roi);
 fcn = makeConstrainToRectFcn('imrect', [1 handles.vr.Width], [1 handles.vr.Height]);
 setPositionConstraintFcn(hRect,fcn);
 handles.roi = wait(hRect);
 handles.roi = [ceil(handles.roi(1:2)), floor(handles.roi(3:4))];
 handles.ROICheck.Value = 1;
+enableAll(handles.figure1);
 
 updateFigure(hObject, eventdata, handles);
 guidata(hObject, handles);
@@ -580,6 +593,13 @@ function ReplayToggle_Callback(hObject, eventdata, handles)
 
 h = handles;
 if hObject.Value
+    h.ROIPush.Enable = 'off';
+    h.BlinkROIPush.Enable = 'off';
+    h.RunToggle.Enable = 'off';
+    h.AutoPush.Enable = 'off';
+    h.PreviewToggle.Enable = 'off';
+    h.FrameSlider.Enable = 'off';
+    h.FineFrameSlider.Enable = 'off';
     hObject.BackgroundColor = 'green';
     hObject.String = 'Stop';
     drawnow;
@@ -598,6 +618,7 @@ end
 hObject.Value = 0;
 hObject.String = 'Replay';
 hObject.BackgroundColor = [1 1 1]*0.94;
+enableAll(h.figure1);
 guidata(hObject, h);
 
 % --- Executes on button press in BlinkROIPush.
@@ -606,12 +627,14 @@ function BlinkROIPush_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+disableAll(handles.figure1);
 hRect = imrect(handles.Axes, handles.blinkRoi);
 fcn = makeConstrainToRectFcn('imrect', [1 handles.vr.Width], [1 handles.vr.Height]);
 setPositionConstraintFcn(hRect,fcn);
 handles.blinkRoi = wait(hRect);
 handles.blinkRoi = [ceil(handles.blinkRoi(1:2)), floor(handles.blinkRoi(3:4))];
 handles.BlinkCheck.Value = 1;
+enableAll(handles.figure1);
 
 updateFigure(hObject, eventdata, handles);
 guidata(hObject, handles);

@@ -115,6 +115,7 @@ h.results.theta = NaN(nFrames, 1);
 h.results.goodFit = false(nFrames, 1);
 h.results.blink = false(nFrames, 1);
 h.results.blinkRho = NaN(nFrames, 1);
+h.results.blinkMean = NaN(nFrames, 1);
 h.results.gaussStd = NaN(nFrames, 1);
 h.results.threshold = NaN(nFrames, 1);
 h.results.roi = NaN(nFrames, 4);

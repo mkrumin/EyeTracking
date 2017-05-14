@@ -50,9 +50,10 @@ if hObject.Value
             h.analyzedFrames(frameIdx) = true;
         end
         
-        [isBlink, blinkRho] = detectBlinkBatch(frames, h);
+        [isBlink, blinkRho, blinkMean] = detectBlinkBatch(frames, h);
         h.results.blink(frameIdx) = isBlink;
         h.results.blinkRho(frameIdx) = blinkRho;
+        h.results.blinkMean(frameIdx) = blinkMean;
         h.results.blinkRoi(frameIdx, :) = repmat(h.blinkRoi, length(frameIdx), 1);
         
         tNow = toc(tStart);

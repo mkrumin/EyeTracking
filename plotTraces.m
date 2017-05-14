@@ -30,6 +30,8 @@ if isfield(h, 'plotHandles')
     h.plotHandles.areaBlinks.YData = h.results.area.*onlyBlinks;
     h.plotHandles.rhoPlot.YData = h.results.blinkRho.*mask;
     h.plotHandles.rhoBlinks.YData = h.results.blinkRho.*onlyBlinks;
+    h.plotHandles.blinkPlot.XData = h.results.blinkMean;
+    h.plotHandles.blinkPlot.YData = h.results.blinkRho;
     
     h.plotHandles.xCurrent.XData = [h.iFrame, h.iFrame];
     h.plotHandles.xCurrent.YData = [min(h.results.x) max(h.results.x)];
@@ -39,6 +41,8 @@ if isfield(h, 'plotHandles')
     h.plotHandles.areaCurrent.YData = [min(h.results.area) max(h.results.area)];
     h.plotHandles.rhoCurrent.XData = [h.iFrame, h.iFrame];
     h.plotHandles.rhoCurrent.YData = [0 1];
+    h.plotHandles.blinkCurrent.XData = h.results.blinkMean(h.iFrame);
+    h.plotHandles.blinkCurrent.YData = h.results.blinkRho(h.iFrame);
     
 else
     % run this block if this is the first time the results are plotted
@@ -67,7 +71,7 @@ else
     onlyBlinks = onlyBlinks.*mask;
     framesAxis = 1:h.vr.NumberOfFrames;
     
-    h.plotHandles.xAxes = subplot(4, 1, 1);
+    h.plotHandles.xAxes = subplot(4, 3, [1 2]);
     h.plotHandles.xPlot = plot(framesAxis, h.results.x.*mask, 'b.-', 'MarkerSize', 4);
     hold on;
     h.plotHandles.xBlinks = plot(framesAxis, h.results.x.*onlyBlinks, 'r.-', 'LineWidth', 1);
@@ -78,7 +82,7 @@ else
     ylim([min(h.results.x(nonBlinkIdx)), max(h.results.x(nonBlinkIdx))]);
     title('Ctrl+Click to navigate to that frame in the GUI, Ctrl+B to toggle blinks');
     
-    h.plotHandles.yAxes = subplot(4, 1, 2);
+    h.plotHandles.yAxes = subplot(4, 3, [4 5]);
     h.plotHandles.yPlot = plot(framesAxis, h.results.y.*mask, 'b.-', 'MarkerSize', 4);
     hold on;
     h.plotHandles.yBlinks = plot(framesAxis, h.results.y.*onlyBlinks, 'r.-', 'LineWidth', 1);
@@ -88,7 +92,7 @@ else
     xlim([1, h.vr.NumberOfFrames]);
     ylim([min(h.results.y(nonBlinkIdx)), max(h.results.y(nonBlinkIdx))]);
     
-    h.plotHandles.areaAxes = subplot(4, 1, 3);
+    h.plotHandles.areaAxes = subplot(4, 3, [7 8]);
     h.plotHandles.areaPlot = plot(framesAxis, h.results.area.*mask, 'b.-', 'MarkerSize', 4);
     hold on;
     h.plotHandles.areaBlinks = plot(framesAxis, h.results.area.*onlyBlinks, 'r.-', 'LineWidth', 1);
@@ -99,7 +103,7 @@ else
     xlim([1, h.vr.NumberOfFrames]);
     ylim([min(h.results.area(nonBlinkIdx)), max(h.results.area(nonBlinkIdx))]);
     
-    h.plotHandles.rhoAxes = subplot(4, 1, 4);
+    h.plotHandles.rhoAxes = subplot(4, 3, [10 11]);
     h.plotHandles.rhoPlot = plot(framesAxis, h.results.blinkRho.*mask, 'b.-', 'MarkerSize', 4);
     hold on;
     h.plotHandles.rhoBlinks = plot(framesAxis, h.results.blinkRho.*onlyBlinks, 'r.-', 'LineWidth', 1);
@@ -108,6 +112,17 @@ else
     xlabel('Frame #');
     ylabel('blink \rho');
     xlim([1, h.vr.NumberOfFrames]);
+    ylim([0 1]);
+    
+    h.plotHandles.blinkAxes = subplot(4, 3, [9 12]);
+    h.plotHandles.blinkPlot = plot(h.results.blinkMean, h.results.blinkRho, '.');
+    hold on;
+    h.plotHandles.blinkCurrent = plot(h.results.blinkMean(h.iFrame), ...
+        h.results.blinkRho(h.iFrame), 'ro');
+    hold off;
+    xlabel('mean');
+    ylabel('\rho');
+    xlim([0 255]);
     ylim([0 1]);
     
     linkaxes([h.plotHandles.xAxes, h.plotHandles.yAxes,...

@@ -124,6 +124,7 @@ else
     ylabel('\rho');
     xlim([0 255]);
     ylim([0 1]);
+    h.plotHandles.blinkAxes.Tag = 'blinks';
     
     linkaxes([h.plotHandles.xAxes, h.plotHandles.yAxes,...
         h.plotHandles.areaAxes, h.plotHandles.rhoAxes], 'x');

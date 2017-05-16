@@ -11,7 +11,8 @@ if isfield(h, 'plotHandles')
     figure(h.plotHandles.figure);
     % make it visible (e.g. when it was 'closed' bu the user)
     set(h.plotHandles.figure, 'Visible', 'on');
-    
+    set(h.plotHandles.figure, 'UserData', h);
+
     mask = ones(size(h.results.blink));
     hideBlinks = getappdata(h.plotHandles.figure, 'hideBlinks');
     if hideBlinks

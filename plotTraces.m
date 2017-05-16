@@ -125,10 +125,10 @@ else
     h.plotHandles.blinkAxes = subplot(4, 3, [9 12]);
     h.plotHandles.blinkPlot = plot(h.results.blinkMean, h.results.blinkRho, '.');
     hold on;
-    h.plotHandles.blinkCurrent = plot(h.results.blinkMean(h.iFrame), ...
-        h.results.blinkRho(h.iFrame), 'ko');
     h.plotHandles.blinkBlinks = plot(h.results.blinkMean(h.results.blink), ...
         h.results.blinkRho(h.results.blink), 'r.');
+    h.plotHandles.blinkCurrent = plot(h.results.blinkMean(h.iFrame), ...
+        h.results.blinkRho(h.iFrame), 'ko');
     pos = h.blinkClassifier;
     pos = [pos; pos(1,:)];
     h.plotHandles.blinkClassifier = plot(pos(:,1), pos(:,2), 'k:');

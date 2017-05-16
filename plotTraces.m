@@ -33,6 +33,13 @@ if isfield(h, 'plotHandles')
     h.plotHandles.rhoBlinks.YData = h.results.blinkRho.*onlyBlinks;
     h.plotHandles.blinkPlot.XData = h.results.blinkMean;
     h.plotHandles.blinkPlot.YData = h.results.blinkRho;
+    h.plotHandles.blinkBlinks.XData = h.results.blinkMean(h.results.blink);
+    h.plotHandles.blinkBlinks.YData = h.results.blinkRho(h.results.blink);
+
+    pos = h.blinkClassifier;
+    pos = [pos; pos(1,:)];
+    h.plotHandles.blinkClassifier.XData = pos(:,1);
+    h.plotHandles.blinkClassifier.YData = pos(:,2);
     
     h.plotHandles.xCurrent.XData = [h.iFrame, h.iFrame];
     h.plotHandles.xCurrent.YData = [min(h.results.x) max(h.results.x)];
@@ -119,7 +126,12 @@ else
     h.plotHandles.blinkPlot = plot(h.results.blinkMean, h.results.blinkRho, '.');
     hold on;
     h.plotHandles.blinkCurrent = plot(h.results.blinkMean(h.iFrame), ...
-        h.results.blinkRho(h.iFrame), 'ro');
+        h.results.blinkRho(h.iFrame), 'ko');
+    h.plotHandles.blinkBlinks = plot(h.results.blinkMean(h.results.blink), ...
+        h.results.blinkRho(h.results.blink), 'r.');
+    pos = h.blinkClassifier;
+    pos = [pos; pos(1,:)];
+    h.plotHandles.blinkClassifier = plot(pos(:,1), pos(:,2), 'k:');
     hold off;
     xlabel('mean');
     ylabel('\rho');

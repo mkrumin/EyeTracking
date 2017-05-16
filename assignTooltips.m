@@ -1,7 +1,8 @@
 function h = assignTooltips(h)
 
 h.ReplaySlider.TooltipString = 'Navigate through analyzed frames';
-h.BlinkRhoEdit.TooltipString = 'Current blink rho threshold (<=1)';
+% h.BlinkRhoEdit.TooltipString = 'Current blink rho threshold (<=1)';
+h.BlinkClassifierPush.TooltipString = 'Define classifier boundaries for blink detection';
 h.BlinkROIPush.TooltipString = 'Assign/change ROI used for blink detection';
 h.ReplayToggle.TooltipString = 'Start/Stop replay of analyzed frames';
 h.ThresholdText.TooltipString = 'Current threshold value';

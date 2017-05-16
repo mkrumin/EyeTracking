@@ -10,6 +10,8 @@ fr = zscore(fr(:));
 af = zscore(af(:));
 
 rho = (af'*fr)/length(af);
-if rho<h.BlinkRhoEdit.Value
+ave = mean(fr(:));
+
+if inpolygon(ave, rho, h.blinkClassifier(:,1), h.blinkClassifier(:,2))
     isBlink = true;
 end

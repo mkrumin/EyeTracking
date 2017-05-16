@@ -22,7 +22,7 @@ function varargout = etGUI(varargin)
 
 % Edit the above text to modify the response to help etGUI
 
-% Last Modified by GUIDE v2.5 02-May-2017 13:51:31
+% Last Modified by GUIDE v2.5 16-May-2017 17:49:54
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -639,40 +639,6 @@ enableAll(handles.figure1);
 updateFigure(hObject, eventdata, handles);
 guidata(hObject, handles);
 
-function BlinkRhoEdit_Callback(hObject, eventdata, handles)
-% hObject    handle to BlinkRhoEdit (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of BlinkRhoEdit as text
-%        str2double(get(hObject,'String')) returns contents of BlinkRhoEdit as a double
-
-num = str2double(hObject.String);
-if ~isnan(num)
-    num = min(num, 1);
-    hObject.Value = num;
-    hObject.String = sprintf('%5.3f', hObject.Value);
-    handles.results.blink(handles.analyzedFrames) = ...
-        handles.results.blinkRho(handles.analyzedFrames)<num;
-else
-    hObject.String = sprintf('%5.3f', hObject.Value);
-end
-
-updateFigure(hObject, eventdata, handles);
-guidata(hObject, handles);
-
-% --- Executes during object creation, after setting all properties.
-function BlinkRhoEdit_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to BlinkRhoEdit (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
 % --- Executes on button press in BlinkCheck.
 function BlinkCheck_Callback(hObject, eventdata, handles)
 % hObject    handle to BlinkCheck (see GCBO)
@@ -734,3 +700,11 @@ function BlinksOnlyCheck_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of BlinksOnlyCheck
+
+
+% --- Executes on button press in BlinkClassifierPush.
+function BlinkClassifierPush_Callback(hObject, eventdata, handles)
+% hObject    handle to BlinkClassifierPush (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+

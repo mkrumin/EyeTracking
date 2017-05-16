@@ -7,7 +7,6 @@ ySpan = h.blinkRoi(2):sum(h.blinkRoi([2, 4]))-1;
 
 af = h.averageFrame(ySpan, xSpan);
 af = zscore(af(:));
-th = h.BlinkRhoEdit.Value;
 
 fr = double(frames(ySpan, xSpan, :));
 fr = reshape(fr, [], nFrames);
@@ -15,4 +14,5 @@ ave = mean(fr, 1);
 fr = zscore(fr);
     
 rho = (af'*fr)/length(af);
-isBlink = rho<th;
+pos = h.blinkClassifier;
+isBlink = inpolygon(ave, rho, pos(:,1), pos(:, 2));

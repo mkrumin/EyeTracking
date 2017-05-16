@@ -58,10 +58,14 @@ h.averageFrame = double(mean(frames, 3));
 af = h.averageFrame(:);
 af = af - mean(af);
 flatFrames = double(reshape(frames, [], size(frames, 3)));
-flatFrames = bsxfun(@minus, flatFrames, mean(flatFrames));
+blinkMean = mean(flatFrames);
+flatFrames = bsxfun(@minus, flatFrames, blinkMean);
 blinkRho = (af'*flatFrames)/std(af)./std(flatFrames)/length(af);
-h.BlinkRhoEdit.Value = mean(blinkRho)-4*std(blinkRho);
-h.BlinkRhoEdit.String = sprintf('%5.3f', h.BlinkRhoEdit.Value);
+rhoThr = mean(blinkRho) - 4*std(blinkRho);
+meanThr = mean(blinkMean) + 3*std(blinkMean);
+posRho = [rhoThr*[1 1 1], rhoThr/2, 0, 0, 0, rhoThr/2];
+posMean = [meanThr, (meanThr + 255)/2, 255*[1 1 1], (meanThr + 255)/2, meanThr*[1 1]];
+h.blinkClassifier = [posMean', posRho'];
 
 h.roi = [1 1 h.vr.Width h.vr.Height];
 h.blinkRoi = h.roi;

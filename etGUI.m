@@ -709,9 +709,18 @@ function BlinkClassifierPush_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-hPoly = impoly(handles.plotHandles.blinkAxes, handles.blinkClassifier);
-handles.blinkClassifier = wait(hPoly);
-delete(hPoly);
-handles = updateBlinks(handles);
-plotTraces(hObject, eventdata, handles);
-guidata(hObject, handles);
+if ~isfield(handles, 'plotHandles');
+    return;
+end
+disableAll(handles.figure1);
+try
+    hPoly = impoly(handles.plotHandles.blinkAxes, handles.blinkClassifier);
+    handles.blinkClassifier = wait(hPoly);
+    delete(hPoly);
+    handles = updateBlinks(handles);
+    plotTraces(hObject, eventdata, handles);
+    guidata(hObject, handles);
+catch
+end
+enableAll(handles.figure1);
+

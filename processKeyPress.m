@@ -12,7 +12,7 @@ if isequal(event.Modifier, {'control'}) && isequal(event.Key, 's')
     xSpan = h.roi(1):sum(h.roi([1, 3]))-1;
     ySpan = h.roi(2):sum(h.roi([2, 4]))-1;
     res = analyzeSingleFrame(h.CurrentFrame(ySpan, xSpan, :), params);
-    [isBlink, blinkRho] = detectBlink(h.CurrentFrame, h);
+    [isBlink, blinkRho, blinkMean] = detectBlink(h.CurrentFrame, h);
     
     xShift = h.roi(1)-1;
     yShift = h.roi(2)-1;
@@ -26,6 +26,7 @@ if isequal(event.Modifier, {'control'}) && isequal(event.Key, 's')
     h.results.goodFit(h.iFrame) = res.isEllipse;
     h.results.blink(h.iFrame) = isBlink;
     h.results.blinkRho(h.iFrame) = blinkRho;
+    h.results.blinkMean(h.iFrame) = blinkMean;
     h.results.gaussStd(h.iFrame) = params.gaussStd;
     h.results.threshold(h.iFrame) = params.thresh;
     h.results.roi(h.iFrame, :) = h.roi;

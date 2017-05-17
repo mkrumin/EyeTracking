@@ -19,7 +19,7 @@ else
 end
 
 if ~isfield(h, 'FileName')
-    % there is no video file open yet. let' sopen the one correcponding to
+    % there is no video file open yet. let's open the one corresponding to
     % the results file
     h = openfile(hObject, eventdata, h, fullfile(state.CurrentFolder, state.FileName));
 end
@@ -32,8 +32,7 @@ if isequal(state.FileName, h.FileName) && ...
     h.analyzedFrames = state.analyzedFrames;
     h.roi = state.roi;
     h.blinkRoi = state.blinkRoi;
-    h.BlinkRhoEdit.Value = state.blinkThreshold;
-    h.BlinkRhoEdit.String = sprintf('%5.3f', state.blinkThreshold);
+    h.blinkClassifier = state.blinkClassifier;
     h.ThresholdSlider.Value = state.Threshold;
     h.ThresholdText.String = sprintf('%3.1f', state.Threshold);
     h.FilterSizeEdit.Value = state.FilterSize;
@@ -47,7 +46,7 @@ if isequal(state.FileName, h.FileName) && ...
     h.ReplaySlider.SliderStep = [min(1, 1/len), min(1, 10/len)];
 else
     % if doesn't match ask what to do
-    str = 'Results file does not match currenlty open video file. You can either "Load parameters only" (e.g. threshold value, ROIs, FilterSize), or "Cancel" and open the correct video file first.';
+    str = 'Results file does not match currently open video file. You can either "Load parameters only" (e.g. threshold value, ROIs, FilterSize), or "Cancel" and open the correct video file first.';
     button = questdlg(str, ...
         'File Mismatch', ...
         'Load parameters only', 'Cancel', 'Cancel');
@@ -55,8 +54,7 @@ else
         case 'Load parameters only'
             h.roi = state.roi;
             h.blinkRoi = state.blinkRoi;
-            h.BlinkRhoEdit.Value = state.blinkThreshold;
-            h.BlinkRhoEdit.String = sprintf('%5.3f', state.blinkThreshold);
+            h.blinkClassifier = state.blinkClassifier;
             h.ThresholdSlider.Value = state.Threshold;
             h.ThresholdText.String = sprintf('%3.1f', state.Threshold);
             h.FilterSizeEdit.Value = state.FilterSize;

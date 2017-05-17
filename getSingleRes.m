@@ -8,6 +8,7 @@ out.bAxis = results.bAxis(iFrame);
 out.theta = results.theta(iFrame);
 out.goodFit = results.goodFit(iFrame);
 out.blink = results.blink(iFrame);
+out.blinkSoft = results.blinkSoft(iFrame);
 out.blinkRho = results.blinkRho(iFrame);
 out.gaussStd = results.gaussStd(iFrame);
 out.threshold = results.threshold(iFrame);

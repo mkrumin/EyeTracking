@@ -22,19 +22,28 @@ if isfield(h, 'plotHandles')
     onlyBlinks = ones(size(h.results.blink));
     onlyBlinks(~h.results.blink) = nan;
     onlyBlinks = onlyBlinks.*mask;
+    softBlinks = ones(size(h.results.blink));
+    softBlinks(~(h.results.blink | h.results.blinkSoft)) = nan;
+    softBlinks = softBlinks.*mask;
     
     h.plotHandles.xPlot.YData = h.results.x.*mask;
     h.plotHandles.xBlinks.YData = h.results.x.*onlyBlinks;
+    h.plotHandles.xSoftBlinks.YData = h.results.x.*softBlinks;
     h.plotHandles.yPlot.YData = h.results.y.*mask;
     h.plotHandles.yBlinks.YData = h.results.y.*onlyBlinks;
+    h.plotHandles.ySoftBlinks.YData = h.results.y.*softBlinks;
     h.plotHandles.areaPlot.YData = h.results.area.*mask;
     h.plotHandles.areaBlinks.YData = h.results.area.*onlyBlinks;
+    h.plotHandles.areaSoftBlinks.YData = h.results.area.*softBlinks;
     h.plotHandles.rhoPlot.YData = h.results.blinkRho.*mask;
     h.plotHandles.rhoBlinks.YData = h.results.blinkRho.*onlyBlinks;
+    h.plotHandles.rhoSoftBlinks.YData = h.results.blinkRho.*softBlinks;
     h.plotHandles.blinkPlot.XData = h.results.blinkMean;
     h.plotHandles.blinkPlot.YData = h.results.blinkRho;
     h.plotHandles.blinkBlinks.XData = h.results.blinkMean(h.results.blink);
     h.plotHandles.blinkBlinks.YData = h.results.blinkRho(h.results.blink);
+    h.plotHandles.blinkSoftBlinks.XData = h.results.blinkMean(h.results.blinkSoft);
+    h.plotHandles.blinkSoftBlinks.YData = h.results.blinkRho(h.results.blinkSoft);
 
     pos = h.blinkClassifier;
     pos = [pos; pos(1,:)];
@@ -72,16 +81,21 @@ else
     mask = ones(size(h.results.blink));
     if hideBlinks
         % when user selects to hide the datapoints during the blinks
-        mask(h.results.blink)= nan;
+        mask(h.results.blink) = nan;
     end
     onlyBlinks = ones(size(h.results.blink));
     onlyBlinks(~h.results.blink) = nan;
     onlyBlinks = onlyBlinks.*mask;
+    % for graphics reasons softBlinks will be soft and hard blinks together
+    softBlinks = ones(size(h.results.blink));
+    softBlinks(~(h.results.blink | h.results.blinkSoft)) = nan;
+    softBlinks = softBlinks.*mask;
     framesAxis = 1:h.vr.NumberOfFrames;
     
     h.plotHandles.xAxes = subplot(4, 3, [1 2]);
     h.plotHandles.xPlot = plot(framesAxis, h.results.x.*mask, 'b.-', 'MarkerSize', 4);
     hold on;
+    h.plotHandles.xSoftBlinks = plot(framesAxis, h.results.x.*softBlinks, 'g.-', 'LineWidth', 1);
     h.plotHandles.xBlinks = plot(framesAxis, h.results.x.*onlyBlinks, 'r.-', 'LineWidth', 1);
     h.plotHandles.xCurrent = plot([h.iFrame, h.iFrame], [min(h.results.x) max(h.results.x)], 'k:');
     hold off;
@@ -93,6 +107,7 @@ else
     h.plotHandles.yAxes = subplot(4, 3, [4 5]);
     h.plotHandles.yPlot = plot(framesAxis, h.results.y.*mask, 'b.-', 'MarkerSize', 4);
     hold on;
+    h.plotHandles.ySoftBlinks = plot(framesAxis, h.results.y.*softBlinks, 'g.-', 'LineWidth', 1);
     h.plotHandles.yBlinks = plot(framesAxis, h.results.y.*onlyBlinks, 'r.-', 'LineWidth', 1);
     h.plotHandles.yCurrent = plot([h.iFrame, h.iFrame], [min(h.results.y) max(h.results.y)], 'k:');
     hold off;
@@ -103,10 +118,10 @@ else
     h.plotHandles.areaAxes = subplot(4, 3, [7 8]);
     h.plotHandles.areaPlot = plot(framesAxis, h.results.area.*mask, 'b.-', 'MarkerSize', 4);
     hold on;
+    h.plotHandles.areaSoftBlinks = plot(framesAxis, h.results.area.*softBlinks, 'g.-', 'LineWidth', 1);
     h.plotHandles.areaBlinks = plot(framesAxis, h.results.area.*onlyBlinks, 'r.-', 'LineWidth', 1);
     h.plotHandles.areaCurrent = plot([h.iFrame, h.iFrame], [min(h.results.area) max(h.results.area)], 'k:');
     hold off;
-    xlabel('Frame #');
     ylabel('Area [px^2]');
     xlim([1, h.vr.NumberOfFrames]);
     ylim([min(h.results.area(nonBlinkIdx)), max(h.results.area(nonBlinkIdx))]);
@@ -114,6 +129,7 @@ else
     h.plotHandles.rhoAxes = subplot(4, 3, [10 11]);
     h.plotHandles.rhoPlot = plot(framesAxis, h.results.blinkRho.*mask, 'b.-', 'MarkerSize', 4);
     hold on;
+    h.plotHandles.rhoSoftBlinks = plot(framesAxis, h.results.blinkRho.*softBlinks, 'g.-', 'LineWidth', 1);
     h.plotHandles.rhoBlinks = plot(framesAxis, h.results.blinkRho.*onlyBlinks, 'r.-', 'LineWidth', 1);
     h.plotHandles.rhoCurrent = plot([h.iFrame, h.iFrame], [0 1], 'k:');
     hold off;
@@ -127,6 +143,8 @@ else
     hold on;
     h.plotHandles.blinkBlinks = plot(h.results.blinkMean(h.results.blink), ...
         h.results.blinkRho(h.results.blink), 'r.');
+    h.plotHandles.blinkSoftBlinks = plot(h.results.blinkMean(h.results.blinkSoft), ...
+        h.results.blinkRho(h.results.blinkSoft), 'g.');
     h.plotHandles.blinkCurrent = plot(h.results.blinkMean(h.iFrame), ...
         h.results.blinkRho(h.iFrame), 'ko');
     pos = h.blinkClassifier;
@@ -137,6 +155,7 @@ else
     ylabel('\rho');
     xlim([0 255]);
     ylim([0 1]);
+    title('use arrows to navigate frame-by-frame');
     h.plotHandles.blinkAxes.Tag = 'blinks';
     
     linkaxes([h.plotHandles.xAxes, h.plotHandles.yAxes,...

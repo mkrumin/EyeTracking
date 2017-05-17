@@ -270,6 +270,7 @@ hObject.Enable = 'on';
 handles.PlotPush.Enable = 'on';
 handles = runAnalysis(hObject, eventdata, handles);
 enableAll(handles.figure1);
+handles = updateBlinks(handles);
 updateFigure(hObject, eventdata, handles);
 guidata(hObject, handles);
 

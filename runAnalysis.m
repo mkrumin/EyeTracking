@@ -55,6 +55,7 @@ if hObject.Value
         h.results.blinkRho(frameIdx) = blinkRho;
         h.results.blinkMean(frameIdx) = blinkMean;
         h.results.blinkRoi(frameIdx, :) = repmat(h.blinkRoi, length(frameIdx), 1);
+        h = updateBlinks(h); % to update the soft blinks
         
         tNow = toc(tStart);
         fps = iBatch*batchSize/tNow;

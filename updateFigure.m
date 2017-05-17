@@ -28,10 +28,16 @@ if h.analyzedFrames(h.iFrame)
     text(max(xlim), max(ylim), 'Replay', ...
         'HorizontalAlignment', 'Right', 'VerticalAlignment', 'Bottom',...
         'FontSize', 20, 'Color', [0 1 1]);
-    if plotBlink && res.blink
-        text(max(xlim), min(ylim), 'B', ...
-            'HorizontalAlignment', 'Right', 'VerticalAlignment', 'Cap',...
-            'FontSize', 20, 'Color', [1 0 0]);
+    if plotBlink
+        if res.blink
+            text(max(xlim), min(ylim), 'B', ...
+                'HorizontalAlignment', 'Right', 'VerticalAlignment', 'Cap',...
+                'FontSize', 20, 'Color', [1 0 0]);
+        elseif res.blinkSoft
+            text(max(xlim), min(ylim), 'B', ...
+                'HorizontalAlignment', 'Right', 'VerticalAlignment', 'Cap',...
+                'FontSize', 20, 'Color', [0 1 0]);
+        end
     end
     h.replayStdText.String = sprintf('std: %s', num2str(h.results.gaussStd(h.iFrame)));
     h.replayThrText.String = sprintf('std: %3.1f', h.results.threshold(h.iFrame));
@@ -61,7 +67,7 @@ if isequal(hObject.Type, 'uicontrol') && isequal(hObject.Style, 'slider')
     drawnow nocallbacks;
 else
     % if it is a button, then you can't ignore callbacks, as then you won't
-    % be able to stop the playback. 
+    % be able to stop the playback.
     % Only limit the graphics update rate, and allow the callbacks
     drawnow limitrate;
 end

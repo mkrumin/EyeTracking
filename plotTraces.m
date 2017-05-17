@@ -44,6 +44,7 @@ if isfield(h, 'plotHandles')
     h.plotHandles.blinkBlinks.YData = h.results.blinkRho(h.results.blink);
     h.plotHandles.blinkSoftBlinks.XData = h.results.blinkMean(h.results.blinkSoft);
     h.plotHandles.blinkSoftBlinks.YData = h.results.blinkRho(h.results.blinkSoft);
+    h.plotHandles.framePlot.CData = h.CurrentFrame;
 
     pos = h.blinkClassifier;
     pos = [pos; pos(1,:)];
@@ -157,6 +158,13 @@ else
     ylim([0 1]);
     title('use arrows to navigate frame-by-frame');
     h.plotHandles.blinkAxes.Tag = 'blinks';
+    
+    h.plotHandles.frameAxes = subplot(4, 3, [3 6]);
+    h.plotHandles.framePlot = imagesc(h.CurrentFrame);
+    h.plotHandles.frameAxes.Visible = 'off';
+    colormap(h.plotHandles.frameAxes, 'gray');
+    caxis(h.plotHandles.frameAxes, [h.MinSlider.Value, h.MaxSlider.Value]);
+    axis(h.plotHandles.frameAxes, 'equal', 'tight')
     
     linkaxes([h.plotHandles.xAxes, h.plotHandles.yAxes,...
         h.plotHandles.areaAxes, h.plotHandles.rhoAxes], 'x');

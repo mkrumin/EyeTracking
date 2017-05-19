@@ -9,6 +9,12 @@ if isequal(event.Modifier, {'control'}) && isequal(event.Key, 'b')
     plotTraces([], [], h);
 end
 
+if isequal(event.Modifier, {'control'}) && isequal(event.Key, 'e')
+    h = src.UserData;
+    % edit the polygon - click the 'Blink Classifier' button
+    etGUI('BlinkClassifierPush_Callback', h.BlinkClassifierPush, [], h);
+end
+
 if isequal(event.Key, 'leftarrow')
         handles = get(src, 'UserData');
         iFrame = max(1, handles.iFrame-1);

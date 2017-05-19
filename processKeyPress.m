@@ -1,5 +1,9 @@
 function processKeyPress(src, event)
 
+if isequal(event.Modifier, {'control'}) && isequal(event.Key, 'a')
+    res = autoAnalyzeFrame(src);
+end
+
 if isequal(event.Modifier, {'control'}) && isequal(event.Key, 's')
     h = guidata(src);
     oldColor = h.figure1.Color;

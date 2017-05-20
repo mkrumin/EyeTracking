@@ -1,8 +1,9 @@
 function h = updateBlinks(h)
 
+overRide = h.results.blink(h.results.blinkManual);
 h.results.blink = inpolygon(h.results.blinkMean, ...
     h.results.blinkRho, h.blinkClassifier(:,1), h.blinkClassifier(:, 2));
-
+h.results.blink(h.results.blinkManual) = overRide;
 % No. of frames (both causal and a-causal) around a 'hard blink' 
 % to be automatically classified as a 'soft blink' 
 nFrames = floor(0.1*h.vr.FrameRate);

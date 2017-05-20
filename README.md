@@ -8,7 +8,7 @@ Play around
 
 # Layout
 
-![etgui_capture](https://cloud.githubusercontent.com/assets/15018753/25728222/811dd0f6-3125-11e7-9350-0ec865a57587.PNG)
+![capture](https://cloud.githubusercontent.com/assets/15018753/26278867/819797a0-3d9c-11e7-87c9-339923c0d83c.PNG)
 
 # Typical workflow
 - `File --> Open...` to open a video file. It will take a few seconds (as the code gathers some statistics).  
@@ -23,7 +23,21 @@ Play around
 **Pupil detection**  
 The frame is cropped to the current ROI, filtered with the Gaussian filter and thresholded. An ellipse is fit to the edge of the detected 'hole' by solving `Ax^2+Bxy+Cy^2+Dx+Ey=1`. 'Concave' parts of the edge are not taken into account, making the fit robust against a typical *LED overlap* problem. Ellipse center, radii, rotation angle, and area are calculated from the estimated parameters A,B,C,D, and E. Currently, when more than a single 'hole' is detected within the ROI, the most central one is chosen as a pupil, which makes the selection of ROI critical for some datasets. Implementation of a smarter way to select the correct pupil candidate is *in the plans*.  
 **Blink detection**  
-The frame is cropped to the current `Blink ROI`. Correlation coefficient between the cropped frame and the corresponding crop of the average frame is calculated and thresholded, with lower values of the correlation coeffcient being indicative of blinks. It is usually a good idea to exclude the LED reflection and the pupil from the `Blink ROI`. Although an initial guess is provided, the threshold should be adjusted manually for better results.
+The frame is cropped to the current `Blink ROI`. Correlation coefficient between the cropped frame and the corresponding crop of the average frame is calculated as well as the mean intensity of the crop. These two values are used to detect blinks. The classifier (a polygon) is shown in the results figure (`Plot Results` button). Although an initial guess is provided, the classifier should be adjusted manually for better results. In addition, classification of individual frames can be manually overridden.  
+'Hard blinks' are those detected as blinks and are marked red in the results figure. 'Soft blinks' are frames within 100 ms from detected 'hard blinks' and are marked green. These two classes are separate in the final results structure, which allows the user to include/exclude these frames from further analysis independently.    
+
+# Controls
+**Main GUI**  
+`Ctrl+S` - analyze current frame with current settings and overwrite the results  
+Right-click the `Plot Results` button to reset the results figure  
+**Results Figure**  
+`Ctrl+Click` - Go to the frame  
+`Ctrl+B` - Show/hide frames detected as blinks  
+`B` - toggle blink status of the current frame - override the polygon classifier  
+`R` - reset blink status of the current frame to match the polygon classifier  
+`Ctrl+R` - reset blink status of all the frames  
+`Ctrl+E` - edit the classification polygon  
+`<--`, `-->` - navigate frame-by-frame  
 
 # Reference Guide
 - File-->Open ...

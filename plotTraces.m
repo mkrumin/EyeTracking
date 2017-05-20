@@ -156,7 +156,7 @@ else
     ylabel('\rho');
     xlim([0 255]);
     ylim([0 1]);
-    title('use arrows to navigate frame-by-frame');
+    title('\leftarrow\rightarrow to navigate frame-by-frame');
     h.plotHandles.blinkAxes.Tag = 'blinks';
     
     h.plotHandles.frameAxes = subplot(4, 3, [3 6]);

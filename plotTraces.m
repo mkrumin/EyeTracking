@@ -12,7 +12,7 @@ if isfield(h, 'plotHandles')
     % make it visible (e.g. when it was 'closed' bu the user)
     set(h.plotHandles.figure, 'Visible', 'on');
     set(h.plotHandles.figure, 'UserData', h);
-
+    
     mask = ones(size(h.results.blink));
     hideBlinks = getappdata(h.plotHandles.figure, 'hideBlinks');
     if hideBlinks
@@ -40,12 +40,20 @@ if isfield(h, 'plotHandles')
     h.plotHandles.rhoSoftBlinks.YData = h.results.blinkRho.*softBlinks;
     h.plotHandles.blinkPlot.XData = h.results.blinkMean;
     h.plotHandles.blinkPlot.YData = h.results.blinkRho;
-    h.plotHandles.blinkBlinks.XData = h.results.blinkMean(h.results.blink);
-    h.plotHandles.blinkBlinks.YData = h.results.blinkRho(h.results.blink);
-    h.plotHandles.blinkSoftBlinks.XData = h.results.blinkMean(h.results.blinkSoft);
-    h.plotHandles.blinkSoftBlinks.YData = h.results.blinkRho(h.results.blinkSoft);
+    if any(h.results.blink)
+        % if we have no blinks, empty XData/YData might crash the code later
+        h.plotHandles.blinkBlinks.XData = h.results.blinkMean(h.results.blink);
+        h.plotHandles.blinkBlinks.YData = h.results.blinkRho(h.results.blink);
+        h.plotHandles.blinkSoftBlinks.XData = h.results.blinkMean(h.results.blinkSoft);
+        h.plotHandles.blinkSoftBlinks.YData = h.results.blinkRho(h.results.blinkSoft);
+    else
+        h.plotHandles.blinkBlinks.XData = NaN;
+        h.plotHandles.blinkBlinks.YData = NaN;
+        h.plotHandles.blinkSoftBlinks.XData = NaN;
+        h.plotHandles.blinkSoftBlinks.YData = NaN;
+    end
     h.plotHandles.framePlot.CData = h.CurrentFrame;
-
+    
     pos = h.blinkClassifier;
     pos = [pos; pos(1,:)];
     h.plotHandles.blinkClassifier.XData = pos(:,1);
@@ -142,10 +150,16 @@ else
     h.plotHandles.blinkAxes = subplot(4, 3, [9 12]);
     h.plotHandles.blinkPlot = plot(h.results.blinkMean, h.results.blinkRho, '.');
     hold on;
-    h.plotHandles.blinkBlinks = plot(h.results.blinkMean(h.results.blink), ...
-        h.results.blinkRho(h.results.blink), 'r.');
-    h.plotHandles.blinkSoftBlinks = plot(h.results.blinkMean(h.results.blinkSoft), ...
-        h.results.blinkRho(h.results.blinkSoft), 'g.');
+    if any(h.results.blink)
+        h.plotHandles.blinkBlinks = plot(h.results.blinkMean(h.results.blink), ...
+            h.results.blinkRho(h.results.blink), 'r.');
+        h.plotHandles.blinkSoftBlinks = plot(h.results.blinkMean(h.results.blinkSoft), ...
+            h.results.blinkRho(h.results.blinkSoft), 'g.');
+    else
+        % to avoid empty lines (they might crash the code later)
+        h.plotHandles.blinkBlinks = plot(NaN, NaN, 'r.');
+        h.plotHandles.blinkSoftBlinks = plot(NaN, NaN, 'g.');
+    end
     h.plotHandles.blinkCurrent = plot(h.results.blinkMean(h.iFrame), ...
         h.results.blinkRho(h.iFrame), 'ko');
     pos = h.blinkClassifier;
@@ -168,7 +182,7 @@ else
     
     linkaxes([h.plotHandles.xAxes, h.plotHandles.yAxes,...
         h.plotHandles.areaAxes, h.plotHandles.rhoAxes], 'x');
-
+    
     set(h.plotHandles.figure, 'UserData', h);
 end
 

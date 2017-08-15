@@ -718,7 +718,10 @@ try
     handles.blinkClassifier = wait(hPoly);
     delete(hPoly);
     handles = updateBlinks(handles);
-    plotTraces(hObject, eventdata, handles);
+    % updating handles here as well (for the case when the code crashes inside
+    % plotTraces and then never gets to the guidata() line)
+    guidata(hObject, handles);
+    handles = plotTraces(hObject, eventdata, handles);
     guidata(hObject, handles);
 catch
 end

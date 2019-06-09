@@ -4,7 +4,7 @@ errFlag = 0;
 if nargin < 4
     if exist(h.CurrentFolder, 'dir')
         [FileName, PathName, ~] = ...
-            uigetfile('*.mj2', 'Open Video File...', h.CurrentFolder);
+            uigetfile('*.mj2', 'Open Video File...', fullfile(h.CurrentFolder, '*mj2'));
     else
         [FileName, PathName, ~] = ...
             uigetfile('*.mj2', 'Open Video File...', pwd);
@@ -15,6 +15,8 @@ if nargin < 4
         errFlag = -1;
         return;
     end
+    
+    [~, fn, fe] = fileparts(FileName);
 else
     [PathName, fn, fe] = fileparts(providedFileName);
     FileName = [fn, fe];
@@ -22,8 +24,11 @@ end
 
 h.CurrentFolder = PathName;
 h.FileName = FileName;
-
-h.vr = VideoReader(fullfile(PathName, FileName));
+fprintf('Creating a local temporary copy of the file ..')
+copyfile(fullfile(PathName, FileName), [h.localTempFileName, fe]);
+fprintf('. done\n');
+h.vr = VideoReader([h.localTempFileName, fe]);
+% h.vr = VideoReader(fullfile(PathName, FileName));
 h.FilenameText.String = fullfile(PathName, FileName);
 nFramesToRead = 500; % this is the maximum, given that the movie is long enough
 singleFrame = read(h.vr, 1);

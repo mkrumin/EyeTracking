@@ -1,6 +1,7 @@
 function h = runAnalysis(hObject, eventdata, h)
 
-batchSize = 1000;
+pars = loadPars;
+batchSize = pars.batchSize;
 blinksOnly = h.BlinksOnlyCheck.Value;
 fps = 0; % prevents an occasional weird bug when updating analysis status text
 if hObject.Value
@@ -18,8 +19,13 @@ if hObject.Value
     iBatch = 1;
     while hObject.Value && iBatch<=nBatches
         frameIdx = h.framesToAnalyze(iStart(iBatch):iEnd(iBatch));
+        fprintf('Reading frames from file ..')
+        ticRead = tic;
         frames = readBatch(h.vr, frameIdx);
+        fprintf('. done (%3.1f seconds)\n', toc(ticRead));
         
+        fprintf('Analyzing frames ..')
+        ticAnalyze = tic;
         if ~blinksOnly
             params.gaussStd = h.FilterSizeEdit.Value;
             params.thresh = h.ThresholdSlider.Value;
@@ -56,6 +62,8 @@ if hObject.Value
         h.results.blinkMean(frameIdx) = blinkMean;
         h.results.blinkRoi(frameIdx, :) = repmat(h.blinkRoi, length(frameIdx), 1);
         h = updateBlinks(h); % to update the soft blinks
+
+        fprintf('. done (%3.1f seconds)\n', toc(ticAnalyze));
         
         tNow = toc(tStart);
         fps = iBatch*batchSize/tNow;

@@ -85,7 +85,9 @@ tt.String = 'Ctrl+S will overwrite the results for this frame';
 tt.FontWeight = 'bold';
 
 % handles.CurrentFolder = 'C:\DATA\';
-handles.CurrentFolder = '\\zserver.cortexlab.net\Data\EyeCamera';
+pars = loadPars;
+handles.CurrentFolder = pars.initFolder;
+handles.localTempFileName = pars.localTempFileName;
 
 % Choose default command line output for etGUI
 handles.output = hObject;

@@ -40,7 +40,7 @@ if h.analyzedFrames(h.iFrame)
         end
     end
     h.replayStdText.String = sprintf('std: %s', num2str(h.results.gaussStd(h.iFrame)));
-    h.replayThrText.String = sprintf('std: %3.1f', h.results.threshold(h.iFrame));
+    h.replayThrText.String = sprintf('thr: %3.1f', h.results.threshold(h.iFrame));
 end
 if doAnalysis
     params.gaussStd = h.FilterSizeEdit.Value;

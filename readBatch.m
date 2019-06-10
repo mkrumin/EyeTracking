@@ -1,7 +1,7 @@
 function frames = readBatch(vr, idx)
 
 idx = sort(idx); %just in case
-frames = NaN(vr.Height, vr.Width, length(idx));
+frames = zeros(vr.Height, vr.Width, length(idx), 'uint8');
 % find blocks of consecutive frames
 
 % delta will be constant for consecutive frames, and will jump otherwise

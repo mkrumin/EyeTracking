@@ -24,6 +24,8 @@ end
 
 h.CurrentFolder = PathName;
 h.FileName = FileName;
+h.CurrentResultsFileName = '';
+h.CurrentResultsFolder = '';
 fprintf('Creating a local temporary copy of the file ..')
 copyfile(fullfile(PathName, FileName), [h.localTempFileName, fe]);
 fprintf('. done\n');

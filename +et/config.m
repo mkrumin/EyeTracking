@@ -83,6 +83,14 @@ switch rigName
         params.save2server = false;
         params.liveviewOn = true;
         params.waitAfterExpEnd = 5;
+    case 'Zeitline'
+        params.deviceID = 2;
+        params.FrameRate = '30.0000';
+        params.Exposure = -5;
+        params.save2server = false;
+        params.liveviewOn = true;
+        params.waitAfterExpEnd = 5;
+        params.localUDPPort = 1003; % will override the default 1001
     case 'SOMEOTHERRIGNAME'
         % override parameters here
     case 'zi'

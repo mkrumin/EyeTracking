@@ -106,7 +106,11 @@ preview(eyeVid);
 % For bidirectional communication echo will be sent to the IP the command
 % was received from
 fakeIP = '1.1.1.1';
-eyeUDP = udp(fakeIP, 1103, 'LocalPort', 1001);
+if isfield(eyePP, 'localUDPPort')
+    eyeUDP = udp(fakeIP, 1103, 'LocalPort', eyePP.localUDPPort);
+else
+    eyeUDP = udp(fakeIP, 1103, 'LocalPort', 1001);
+end
 set(eyeUDP, 'DatagramReceivedFcn', 'et.eyeUDPCallback;');
 fopen(eyeUDP);
 

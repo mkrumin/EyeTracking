@@ -107,7 +107,8 @@ fprintf('There are %d timestamps in the log file\n', length(eyeLog.TriggerData))
 endInd = [];
 startInd = [];
 for iEvent = length(eyeLog.udpEvents):-1:1
-    if strfind(eyeLog.udpEvents{iEvent}, 'ExpEnd')
+    if ~isempty(strfind(eyeLog.udpEvents{iEvent}, 'ExpEnd')) || ...
+            ~isempty(strfind(eyeLog.udpEvents{iEvent}, 'ExpInterrupt'))
     %if ~isempty(strfind(eyeLog.udpEvents{iEvent}, 'ExpEnd')) ...
     %        || ~isempty(strfind(eyeLog.udpEvents{iEvent}, 'ExpInterrupt'))
         endInd = iEvent;

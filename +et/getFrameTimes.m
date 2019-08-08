@@ -107,7 +107,8 @@ fprintf('There are %d timestamps in the log file\n', length(eyeLog.TriggerData))
 endInd = [];
 startInd = [];
 for iEvent = length(eyeLog.udpEvents):-1:1
-    if strfind(eyeLog.udpEvents{iEvent}, 'ExpEnd')
+    if ~isempty(strfind(eyeLog.udpEvents{iEvent}, 'ExpEnd')) || ...
+            ~isempty(strfind(eyeLog.udpEvents{iEvent}, 'ExpInterrupt'))
     %if ~isempty(strfind(eyeLog.udpEvents{iEvent}, 'ExpEnd')) ...
     %        || ~isempty(strfind(eyeLog.udpEvents{iEvent}, 'ExpInterrupt'))
         endInd = iEvent;
@@ -153,8 +154,8 @@ end
 
 if tl_flag
     tlTimes = Timeline.mpepUDPTimes(1:nEvents);
-    nEvents2Discard = 3; % the first few event timing is unreliable
-    idx = nEvents2Discard+1:nEvents;
+    nEvents2Discard = 1; % ExpStart has an arbitrary 0 time in Timeline
+    idx = nEvents2Discard+1:nEvents-1; % ExpEnd might also misbehave in terms of relative timing
     timeDiff = median(eyeTimes(idx)) - median(tlTimes(idx));
     frameTimes = frameTimes - timeDiff;    
 end

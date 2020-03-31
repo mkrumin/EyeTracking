@@ -1,7 +1,7 @@
 function pars = loadPars()
 
 p = dat.paths;
-pars.initFolder = fullfile(p.mainRepository, 'PC041');
+pars.initFolder = fullfile(p.mainRepository, 'CR017');
 pars.localTempFileName = 'R:\Temp\tmp'; % it is safer to first copy the file locally, and then open it
 % it is also faster if the local copy is on fast SSD, or even on virtual RAM drive
 pars.batchSize = 2048;

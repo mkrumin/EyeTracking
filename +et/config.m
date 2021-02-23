@@ -1,49 +1,6 @@
 function params = config()
 
 
-params.adaptorName = 'winvideo';
-params.deviceID = 1;
-params.format = 'Y800_640x480';
-
-params.FramesPerTrigger = 1;        % we are acquiring one frame per trigger
-params.FrameRate = '30.0000';       % typical values {'3.7500', '7.5000', '15.0000', '30.0000', '60.0002'}
-params.Exposure = -5;               % 2^x seconds, e.g. 2^(-5) == 1/32, which is good for 30 fps.
-% If the exposure is too long for the required frame rate
-% the imaging will be too slow
-params.Gain = 1023;                 % 1023 is the maximum value
-
-params.UseTriggered = false;        % not for winvideo driver
-params.TriggerPolarity = 'High';    % not for winvideo driver
-params.UseStrobe = false;           % not for winvideo driver
-params.StrobePolarity = 'High';     % not for winvideo driver
-params.StrobeMode = 'exposure';     % not for winvideo driver
-
-% params.VideoProfile = 'Archival'; % this one is using lossless compression and results in huge files
-
-% params.VideoProfile = 'Motion JPEG AVI'; % this one save all three RGB channels, so suboptimal in terms of space
-% params.VideoQuality = 75;
-
-params.VideoProfile = 'Motion JPEG 2000'; % this one seems to be the best option
-params.CompressionRatio = 5; % must be >1, 5 gives good video quality
-% while keeping files to a reasonable size on my setup
-
-params.save2server = false; % if true, will automatically copy files to server at the end of the experiment.
-% If false will only keep local copy.
-% use false if time-gap between different experiments is critical, copying
-% might take some time.
-% IMPORTANT! DO NOT start a new experiment before the copying is over
-% THE PARAMS.SAVEBY IS CURRENTLY NOT SUPPORTED, WILL SAVE BY EXPERIMENT
-params.saveBy = 'experiment'; % one of {'experiment', 'repeat', 'stimulus'}
-params.liveviewOn = true; % for fast frame rates together with larger number of pixels might be
-% useful to switch liveview off to reduce load on the system
-
-params.waitAfterExpEnd = 2; % number of seconds to wait after receiving EndExp command before stopping things.
-% This allows time for the timeline computer to
-% stop sending triggers so that you know you
-% collected all the triggered frames.
-% Not enabled by default.
-
-
 %% these are the default parameters for 'tisimaq_r2013' adaptor
 
 % params.adaptorName = 'tisimaq_r2013';
@@ -76,141 +33,71 @@ params.waitAfterExpEnd = 2; % number of seconds to wait after receiving EndExp c
 rigName = rigName(1:end-1); % removing the Line Feed character
 
 switch rigName
-    case 'ZQUAD'
-        params.deviceID = 1;
-        params.FrameRate = '30.0000';
-        params.Exposure = -6;
-        params.save2server = false;
-        params.liveviewOn = true;
-        params.waitAfterExpEnd = 5;
-    case 'Zeitline'
-        params.deviceID = 2;
-        params.FrameRate = '30.0000';
-        params.Exposure = -5;
-        params.save2server = false;
-        params.liveviewOn = true;
-        params.waitAfterExpEnd = 5;
-        params.localUDPPort = 1003; % will override the default 1001
+    case 'ZEPHYR'
+        params.general.save2server = false;
+        params.general.expEndDelay = 5;
+        params.general.localUDPPort = 1003; % will override the default 1001
+        params.general.liveviewOn = true;
+
+
+        params.strobe.useStrobe = false;
+        params.strobe.fieldName = 'Strobe1';
+        params.strobe.onValue = 'On';
+        params.strobe.offValue = 'Off';
+
+        params.trigger.useTrigger = false;
+        params.trigger.type = 'hardware';
+        params.trigger.signal = 'risingEdge';
+        params.trigger.source = 'externalTriggerMode1-Source0';
+        
+        params.videoInput.adaptorName = 'pointgrey';
+        params.videoInput.deviceID = 1;
+        params.videoInput.format = 'F7_Mono8_640x512_Mode1';
+%         params.videoInput.format = 'F7_Mono8_1280x1024_Mode0';
+        params.videoInput.FramesPerTrigger = 1;  % we are acquiring one frame per trigger
+        params.videoInput.VideoProfile = 'Motion JPEG 2000'; % this one seems to be the best option
+        params.videoInput.CompressionRatio = 5; % must be >1, 5 gives good video quality
+% while keeping files to a reasonable size on my setup
+        
+        params.videoSource.Tag = 'bellyCam';
+        params.videoSource.FrameRateMode = 'Manual';
+        params.videoSource.FrameRate = 30;
+
+        params.videoSource.Brightness = 0;
+        params.videoSource.ExposureMode = 'Manual';
+        params.videoSource.Exposure = 0;
+        params.videoSource.GainMode = 'Manual';
+        params.videoSource.Gain = 0;
+        params.videoSource.GammaMode = 'Manual';
+        params.videoSource.Gamma = 1;
+        params.videoSource.SharpnessMode = 'Manual';
+        params.videoSource.Sharpness = 0;
+        params.videoSource.ShutterMode = 'Manual';
+        params.videoSource.Shutter = 30;
+        params.videoSource.Strobe1 = 'Off';
+        params.videoSource.Strobe1Delay = 0;
+        params.videoSource.Strobe1Duration = 1;
+        params.videoSource.Strobe1Polarity = 'High';
+        params.videoSource.TriggerDelayMode = 'Manual';
+        params.videoSource.TriggerDelay = 0;
+        params.videoSource.TriggerParameter = 1;        
+
+        % other properties, which we either don't need to define, or they
+        % are read-only
+        
+%         SerialNumber = 19462589
+%         Strobe2 = Off
+%         Strobe2Delay = 0
+%         Strobe2Duration = 0
+%         Strobe2Polarity = Low
+%         Strobe3 = Off
+%         Strobe3Delay = 0
+%         Strobe3Duration = 0
+%         Strobe3Polarity = Low
+%         Temperature = 318.3
+        
     case 'SOMEOTHERRIGNAME'
         % override parameters here
-    case 'zi'
-        params.deviceID = 2;
-        params.save2server = true;
-        %params.format = 'RGB24_640x480';
-        %params.Exposure = 166; %[ms]?
-        params.FrameRate = '60.0002'; %DS on 22/2/15
-    case 'ZEYE2'
-        
-        %*** Here are the old params, revised by NS 2014-08-06
-        %         params.deviceID = 3;
-        %         params.FrameRate = '30.0000';
-        %         params.Exposure = -5;
-        %         params.save2server = false;
-        %         params.liveviewOn = true;
-        %*** old params end here
-        
-        params.adaptorName = 'tisimaq_r2013';
-        params.deviceID = 1;
-        params.format = 'Y800 (640x480)';
-        params.FrameRate = '30.00'; % important that there are only two 0's after decimal
-        %params.Exposure = pow2(ceil(log2(params.FrameRate))); % or you can define manually
-        params.Exposure = 0.01;
-        params.UseTriggered = true;
-        params.UseStrobe = true;
-        params.StrobePolarity = 'High';
-        params.StrobeMode = 'exposure';
-        
-        params.waitAfterExpEnd = 5;
-        params.save2server = true;
-        
-    case 'zeye'
-        params.deviceID = 3;
-        params.FrameRate = '30.0000';
-        params.Exposure = -5;
-        params.save2server = false;
-        params.liveviewOn = true;
-    case 'ZANKH'
-        params.deviceID = 1;
-        params.FrameRate = '30.0000';
-        params.Exposure = -5;
-        params.save2server = false;
-        params.liveviewOn = true;
-    case 'Zoo'
-        params.deviceID = 1;
-        params.FrameRate = '15.0000';
-        params.format = 'RGB24_640x480';
-        %         params.Exposure = -5;
-        params.save2server = false;
-        params.liveviewOn = true;
-        params.Gain = 0;                 % 1023 is the maximum value
-        
-    case 'zlickblink'
-%         params.deviceID = 3;
-%         params.FrameRate = '30.0000';
-%         params.Exposure = -5;
-%         params.save2server = true;
-%         params.liveviewOn = true;
-%         params.adaptorName ='winvideo';
-%         params.deviceID = 3;
-%         params.format = 'Y800_640x480';
-%         params.FrameRate = '30.0000';
-
-%         params.adaptorName = 'tisimaq_r2013';
-%         params.deviceID = 1;
-%         params.format = 'Y800 (640x480)';
-%         params.FrameRate = '30.00'; % important that there are only two 0's after decimal
-% %         params.Exposure = pow2(ceil(log2(params.FrameRate))); % or you can define manually
-%         params.Exposure = 0.01;
-%         params.UseTriggered = false;
-%         params.UseStrobe = true;
-%         params.StrobePolarity = 'High';
-%         params.StrobeMode = 'exposure';
-%         params.waitAfterExpEnd = 2;
-%         params.save2server = false;
-    
-        % older settings, commented out on 2017-06-07 MK AL
-        params.adaptorName = 'tisimaq_r2013';
-        params.deviceID = 1;
-        params.format = 'Y800 (640x480)';
-        params.FrameRate = '60.00'; % important that there are only two 0's after decimal
-        %params.Exposure = pow2(ceil(log2(params.FrameRate))); % or you can define manually
-        params.Exposure = 0.01;
-        params.UseTriggered = true;
-        params.UseStrobe = true;
-        params.StrobePolarity = 'High';
-        params.StrobeMode = 'exposure';
-        
-        params.waitAfterExpEnd = 2;
-        params.save2server = true;
-        
-        
-    case 'zugly'
-        params.adaptorName = 'tisimaq_r2013';
-        params.deviceID = 1;
-        params.format = 'Y800 (640x480)';
-        params.FrameRate = '60.00'; % important that there are only two 0's after decimal
-        %params.Exposure = pow2(ceil(log2(params.FrameRate))); % or you can define manually
-        params.Exposure = 0.01;
-        params.UseTriggered = true;
-        params.UseStrobe = true;
-        params.StrobePolarity = 'High';
-        params.StrobeMode = 'exposure';
-        params.waitAfterExpEnd = 5;
-        params.save2server = true;
-        
-    case 'ZCAMP3'
-        params.adaptorName = 'ni';
-        params.deviceID = 1;
-        params.format = 'img0';
-
-    case 'zimage'
-        params.FrameRate = '30.0000';
-        params.Exposure = -5;
-        params.save2server = false;
-        params.liveviewOn = true;
-        params.waitAfterExpEnd = 5;
-        params.Gain = 6;
-        
     otherwise
         warning('Rig specific parameters not applied, using defaults. Use CORRECT CASE host names in the switch-case structure in et.config().');
 end

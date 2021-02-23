@@ -2,18 +2,19 @@ function expendScript
 % this is the ExpEnd script
 
 global eyeLog eyePP eyeVid eyeUDP vr receivedData
-global folders fileStems expStarted udpLogfileID
+global folderName fileStem expStarted udpLogfileID
 
 % persistent folders fileStems expStarted udpLogfileID
 
-if eyePP.waitAfterExpEnd>0
+if eyePP.general.expEndDelay>0
     fprintf('.done\n');
 end
 
-if eyePP.UseStrobe
+if eyePP.strobe.useStrobe
     src = getselectedsource(eyeVid);
+    set(src, eyePP.strobe.fieldName, eyePP.strobe.offValue);
+    % TODO - this code will crash
     src.Trigger = 'Disable';
-    src.Strobe = 'Disable';
 end
 
 % stopping the acquisition
@@ -21,7 +22,7 @@ stop(eyeVid);
 wait(eyeVid);
 
 % re-starting the preview (if necessary)
-if ~eyePP.liveviewOn
+if ~eyePP.general.liveviewOn
     preview(eyeVid);
 end
 
@@ -40,7 +41,7 @@ end
 
 % let's open the file to check how many frames were acquired
 vr = VideoReader(fullfile(get(eyeVid.Disklogger, 'Path'), get(eyeVid.Disklogger, 'Filename')));
-nFrames = vr.NumberOfFrames;
+nFrames = vr.NumFrames;
 fprintf('FramesAcquired = %d, FramesLogged = %d\n', eyeVid.FramesAcquired, nFrames)%eyeVid.DiskLoggerFrameCount)
 if (eyeVid.FramesAcquired~=nFrames)
     fprintf('\nNumber of frames do not match, most likely the last frame was not logged into the video file\n');
@@ -61,27 +62,27 @@ eyeLog.paramsUsed = eyePP;
 
 if expStarted % do this only if the experiment was actually running
     % saving the log file(s) locally
-    iName = 1;
-    save(fullfile(folders{iName}, fileStems{iName}), 'eyeLog');
+    save(fullfile(folderName, fileStem), 'eyeLog');
     fprintf('Log file(s) saved locally\n');
     % sending an echo UDP to mpep
     fwrite(eyeUDP, receivedData);
     
     % save files to zserver
-    if isfield(eyePP, 'save2server') && eyePP.save2server
+    if isfield(eyePP.general, 'save2server') && ...
+            eyePP.general.save2server
         
         fprintf('Copying files to zserver...\nWait, do not start a new experiment\n');
         
-        iName=2;
         switch eyePP.VideoProfile
             case 'Archival'
-                source = [folders{1}, filesep, '*.mj2'];
+                source = [folderName, filesep, '*.mj2'];
             case 'Motion JPEG AVI'
-                source = [folders{1}, filesep, '*.avi'];
+                source = [folderName, filesep, '*.avi'];
             case 'Motion JPEG 2000'
-                source = [folders{1}, filesep, '*.mj2'];
+                source = [folderName, filesep, '*.mj2'];
         end
-        destination = [folders{iName}, filesep];
+        destFolder = dat.expPath(eyeLog.ExpRef, 'main', 'master');
+        destination = [destFolder, filesep];
         
         [mkSuccess, message] = mkdir(destination);
         if mkSuccess
@@ -102,7 +103,7 @@ if expStarted % do this only if the experiment was actually running
         
         tic
         % saving the log file(s) to the server
-        source = [folders{1}, filesep, [fileStems{1}, '*.mat']];
+        source = [folderName, filesep, [fileStem, '*.mat']];
         [copySuccess, message, messageID]=copyfile(source, destination);
         if copySuccess
             fprintf('Log file(s) successfully copied to %s\n', destination);
@@ -117,8 +118,8 @@ if expStarted % do this only if the experiment was actually running
     eyeLog = [];
     expStarted = false;
     udpLogfileID = [];
-    folders = [];
-    fileStems = [];
+    folderName = [];
+    fileStem = [];
     
     fprintf('Ready for new acquisition\n');
 end
